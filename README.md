@@ -1,4 +1,4 @@
-# Implementaci-n-de-framework-de-creaci-n-de-minijuegos
+# Implementación-de-framework-de-creación-de-minijuegos
 TFG
 
 Tutor: Pablo García Sánchez
