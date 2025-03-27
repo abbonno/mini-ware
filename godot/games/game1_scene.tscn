@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfgxx76gh6fe7"]
+
+[ext_resource type="Texture2D" uid="uid://bup0boy2l8l77" path="res://Public/Img/boton.png" id="1_1wtkd"]
+
+[node name="Game1Scene" type="Node2D"]
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 961.0
+offset_bottom = 372.0
+texture = ExtResource("1_1wtkd")

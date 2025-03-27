@@ -1,0 +1,96 @@
+[gd_scene load_steps=5 format=3 uid="uid://c56tlih7seaxm"]
+
+[ext_resource type="Script" path="res://title.gd" id="1_wdayv"]
+[ext_resource type="Texture2D" uid="uid://dnktfnvy6g2ad" path="res://Public/Img/buttonTextureNormal.png" id="2_grhxi"]
+[ext_resource type="Texture2D" uid="uid://c81yjo50offib" path="res://Public/Img/buttonTextureHover.png" id="3_bnry2"]
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sbfx6"]
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wdayv")
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 0
+offset_right = 1152.0
+offset_bottom = 648.0
+texture = SubResource("ViewportTexture_sbfx6")
+expand_mode = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 449.0
+offset_top = 318.0
+offset_right = 683.0
+offset_bottom = 548.0
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Jugar"
+
+[node name="OptionsButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Opciones"
+
+[node name="ExitButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Salir"
+
+[node name="TextureButton" type="TextureButton" parent="ButtonContainer"]
+layout_mode = 2
+texture_normal = ExtResource("2_grhxi")
+texture_hover = ExtResource("3_bnry2")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="ButtonContainer/TextureButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "sdfasfdadsfa"
+
+[node name="Options" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="Options"]
+layout_mode = 0
+offset_right = 1153.0
+offset_bottom = 650.0
+color = Color(0, 0, 0, 0.666667)
+
+[node name="Panel" type="Panel" parent="Options"]
+layout_mode = 0
+offset_left = 421.0
+offset_top = 246.0
+offset_right = 732.0
+offset_bottom = 419.0
+
+[node name="ColorRect" type="ColorRect" parent="Options/Panel"]
+layout_mode = 0
+offset_right = 286.0
+offset_bottom = 154.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Options/Panel/ColorRect"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 46.0
+offset_right = 217.0
+offset_bottom = 86.0
+
+[node name="FullScreen" type="Button" parent="Options/Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+text = "Pantalla completa"
+
+[node name="Return" type="Button" parent="Options/Panel/ColorRect/VBoxContainer"]
+layout_mode = 2
+text = "Return"
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+autoplay = true
