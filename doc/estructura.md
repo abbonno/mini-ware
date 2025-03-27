@@ -1,6 +1,6 @@
 # Estructura
 
-> El contenido es temporal y está poco madurado
+> El contenido es temporal y está poco madurado **(actualizar, está outdated)**
 
 /GameFramework/
 │── /core/                  # Código base del framework
