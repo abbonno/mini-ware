@@ -11,9 +11,13 @@ config_version=5
 [application]
 
 config/name="miniware-godot"
-run/main_scene="res://title.tscn"
+run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 config/icon="res://icon.svg"
+
+[audio]
+
+buses/default_bus_layout="res://others/default_bus_layout.tres"
 
 [rendering]
 

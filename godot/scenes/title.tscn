@@ -1,0 +1,128 @@
+[gd_scene load_steps=9 format=3 uid="uid://c56tlih7seaxm"]
+
+[ext_resource type="Script" path="res://scripts/title.gd" id="1_wdayv"]
+[ext_resource type="Texture2D" uid="uid://dnktfnvy6g2ad" path="res://Public/Img/buttonTextureNormal.png" id="2_grhxi"]
+[ext_resource type="Shader" path="res://others/background.gdshader" id="2_ydj8f"]
+[ext_resource type="Texture2D" uid="uid://c81yjo50offib" path="res://Public/Img/buttonTextureHover.png" id="3_bnry2"]
+[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="4_u7bnj"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_7kv1f"]
+shader = ExtResource("2_ydj8f")
+
+[sub_resource type="ViewportTexture" id="ViewportTexture_sbfx6"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_kbful"]
+font_size = 50
+
+[node name="Title" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_wdayv")
+
+[node name="BackgroundAnimatedShader" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_7kv1f")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.00775083, 0.0113595, 0.0183248, 1)
+
+[node name="Background" type="TextureRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = SubResource("ViewportTexture_sbfx6")
+expand_mode = 2
+
+[node name="TitleLabel" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -133.5
+offset_top = 110.0
+offset_right = 133.5
+offset_bottom = 179.0
+grow_horizontal = 2
+text = "BALATRO 2"
+label_settings = SubResource("LabelSettings_kbful")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -99.0
+offset_top = -124.0
+offset_right = 101.0
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Logo" type="TextureRect" parent="Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ButtonContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -117.0
+offset_top = -262.0
+offset_right = 117.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="PlayButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Jugar"
+
+[node name="OptionsButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Opciones"
+
+[node name="ExitButton" type="Button" parent="ButtonContainer"]
+layout_mode = 2
+text = "Salir"
+
+[node name="TextureButton" type="TextureButton" parent="ButtonContainer"]
+visible = false
+layout_mode = 2
+texture_normal = ExtResource("2_grhxi")
+texture_hover = ExtResource("3_bnry2")
+stretch_mode = 0
+
+[node name="Label" type="Label" parent="ButtonContainer/TextureButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "sdfasfdadsfa"
+
+[node name="Options" parent="." instance=ExtResource("4_u7bnj")]
+visible = false
+layout_mode = 1
+
+[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
+autoplay = true
+bus = &"Music"

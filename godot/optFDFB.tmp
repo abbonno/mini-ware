@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcbrl5miuvflu"]
+
+[ext_resource type="Script" path="res://options.gd" id="1_8ddlt"]
+
+[node name="Options" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_8ddlt")
+
+[node name="ShadowBackground" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 1153.0
+offset_bottom = 650.0
+color = Color(0, 0, 0, 0.666667)
+
+[node name="OptionsPanel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 421.0
+offset_top = 246.0
+offset_right = 732.0
+offset_bottom = 419.0
+
+[node name="OptionsBackground" type="ColorRect" parent="OptionsPanel"]
+layout_mode = 0
+offset_right = 286.0
+offset_bottom = 154.0
+
+[node name="OptionsButtonContainer" type="VBoxContainer" parent="OptionsPanel/OptionsBackground"]
+layout_mode = 0
+offset_left = 69.0
+offset_top = 46.0
+offset_right = 217.0
+offset_bottom = 86.0
+
+[node name="FullScreenButton" type="Button" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
+layout_mode = 2
+text = "Pantalla completa"
+
+[node name="VolumeSlider" type="HSlider" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
+layout_mode = 2
+max_value = 1.0
+step = 0.1
+value = 1.0
+
+[node name="OptionsReturnButton" type="Button" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
+layout_mode = 2
+text = "Return"
+
+[connection signal="value_changed" from="OptionsPanel/OptionsBackground/OptionsButtonContainer/VolumeSlider" to="." method="_on_volume_slider_value_changed"]
