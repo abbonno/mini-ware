@@ -35,14 +35,15 @@ func _ready():
 	if FileAccess.file_exists(MUSIC_PATH):
 		var music = load(MUSIC_PATH)
 		music_player.stream = music
+		music_player.stream.loop = true
 
 	music_player.play()
 	
 	for button in button_container.get_children():
+		print(button.name)
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
 
 func _on_button_pressed(button_name):
-	print(button_name)
 	match button_name:
 		"PlayButton":
 			start_game()
@@ -53,12 +54,10 @@ func _on_button_pressed(button_name):
 
 # Función para iniciar el juego
 func start_game():
-	print("play")
-	get_tree().change_scene_to_file("res://games/game1_scene.tscn")
+	get_tree().change_scene_to_file("res://scenes/mainMenu.tscn")
 
 # Función para abrir las opciones
 func show_options():
-	print("Abrir menú de opciones...")
 	options.visible = true
 	
 func _on_close_options():

@@ -13,7 +13,7 @@ dest_files=["res://.godot/imported/titleTheme.ogg-275e19463846ad622bf16a52d328f4
 [params]
 
 loop=false
-loop_offset=0
-bpm=0
+loop_offset=0.0
+bpm=0.0
 beat_count=0
 bar_beats=4
