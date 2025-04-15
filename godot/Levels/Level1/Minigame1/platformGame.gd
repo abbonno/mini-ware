@@ -12,7 +12,7 @@ func _process(delta):
 
 func _on_flag_reached(body):
 	if body.name == "Player":
-		get_tree().change_scene_to_file("res://scenes/mainMenu.tscn")
+		get_tree().change_scene_to_file("res://Levels/Level1/control.tscn")
 
 func _on_time_up():
 	show_result("¡Has perdido!")

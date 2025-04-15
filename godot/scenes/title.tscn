@@ -1,9 +1,7 @@
-[gd_scene load_steps=9 format=3 uid="uid://c56tlih7seaxm"]
+[gd_scene load_steps=7 format=3 uid="uid://c56tlih7seaxm"]
 
 [ext_resource type="Script" path="res://scripts/title.gd" id="1_wdayv"]
-[ext_resource type="Texture2D" uid="uid://dnktfnvy6g2ad" path="res://Public/Img/buttonTextureNormal.png" id="2_grhxi"]
 [ext_resource type="Shader" path="res://others/background.gdshader" id="2_ydj8f"]
-[ext_resource type="Texture2D" uid="uid://c81yjo50offib" path="res://Public/Img/buttonTextureHover.png" id="3_bnry2"]
 [ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="4_u7bnj"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_7kv1f"]
@@ -105,19 +103,6 @@ text = "Opciones"
 [node name="ExitButton" type="Button" parent="ButtonContainer"]
 layout_mode = 2
 text = "Salir"
-
-[node name="TextureButton" type="TextureButton" parent="ButtonContainer"]
-visible = false
-layout_mode = 2
-texture_normal = ExtResource("2_grhxi")
-texture_hover = ExtResource("3_bnry2")
-stretch_mode = 0
-
-[node name="Label" type="Label" parent="ButtonContainer/TextureButton"]
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 23.0
-text = "sdfasfdadsfa"
 
 [node name="Options" parent="." instance=ExtResource("4_u7bnj")]
 visible = false
