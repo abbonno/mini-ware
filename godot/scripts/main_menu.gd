@@ -1,7 +1,7 @@
 extends Control
 
 @onready var bg_texture = $Background
-@onready var game_picture = $GamePicture
+@onready var game_picture = $Panel/GamePicture
 @onready var game_label = $GameLabel
 @onready var button_control = $ButtonControl
 @onready var options = $Options

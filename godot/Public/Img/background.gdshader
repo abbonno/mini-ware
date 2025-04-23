@@ -1,6 +1,5 @@
 shader_type canvas_item;
 
-//Puedes editar este shader y habilitar el BackgroundAnimatedShader para hacer un fondo animado básico
 void fragment() {
     vec2 uv = UV;
     float t = sin(TIME * 0.5) * 0.5 + 0.5; // Animación de color

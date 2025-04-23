@@ -1,5 +1,5 @@
 {
-    "puntuacion": "A",
-    "superado": false,
-    "descripcion": "Lorem impsum y tal"
+	"puntuacion": "A",
+	"superado": "false",
+	"descripcion": "Lorem impsum y tal"
 }
