@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://dfgxx76gh6fe7"]
 
 [ext_resource type="Script" path="res://Levels/Level1/Minigame1/platformGame.gd" id="1_1i2tx"]
-[ext_resource type="Texture2D" uid="uid://cl8j4i83qaqrh" path="res://Public/Img/background.jpg" id="2_p2l4c"]
-[ext_resource type="Texture2D" uid="uid://bup0boy2l8l77" path="res://Public/Img/boton.png" id="3_0dgo5"]
+[ext_resource type="Texture2D" uid="uid://bgychrpmkgyjs" path="res://Public/Img/background.jpg" id="2_p2l4c"]
+[ext_resource type="Texture2D" uid="uid://epenj6kgxb1w" path="res://Public/Img/boton.png" id="3_0dgo5"]
 [ext_resource type="Script" path="res://Levels/Level1/Minigame1/player.gd" id="4_ib00n"]
 [ext_resource type="Texture2D" uid="uid://dt3v1imsat7dc" path="res://Levels/Level1/Minigame1/player.png" id="5_s2tiv"]
 
