@@ -13,7 +13,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_i6vpc")
 
-[node name="Background" type="TextureRect" parent="."]
+[node name="Background" type="Control" parent="."]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -21,7 +21,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Panel" type="Panel" parent="."]
+[node name="LevelPicturePanel" type="Panel" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -35,7 +35,7 @@ offset_bottom = 150.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="GamePicture" type="TextureRect" parent="Panel"]
+[node name="LevelPicture" type="TextureRect" parent="LevelPicturePanel"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -50,7 +50,7 @@ grow_horizontal = 2
 grow_vertical = 2
 expand_mode = 4
 
-[node name="GameLabel" type="Label" parent="."]
+[node name="LevelLabel" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

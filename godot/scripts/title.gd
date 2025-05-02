@@ -10,13 +10,12 @@ extends Control
 
 @onready var options = $Options
 
+const CONFIG_FILE = "res://config/settings.cfg"
 const IMG_PATH = "res://Public/Img/"
 const BACKGROUND = "background"
 const LOGO = "logo"
-const MUSIC_PATH = "res://Public/Music/titleTheme.ogg"
-const CONFIG_FILE = "res://config/settings.cfg"
-
-var project_name = ProjectSettings.get("application/config/name") # Modificar si se quiere cambiar el nombre del juego
+const MUSIC_PATH = "res://Public/Music/"
+const TITLE_THEME = "titleTheme"
 
 func _ready():
 	# Carga los ajustes guardados
@@ -26,21 +25,18 @@ func _ready():
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		var volume = config.get_value("audio", "music_volume", 0.5)
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), linear_to_db(volume))
+	
 	options.close_options.connect(_on_close_options)
 	
 	# Carga título juego
-	titleLabel.text = project_name
+	titleLabel.text = ProjectSettings.get("application/config/name")
 	
 	# Carga recursos visuales
 	assetRecognition.load_visual_resource(IMG_PATH, BACKGROUND, background)
 	assetRecognition.load_visual_resource(IMG_PATH, LOGO, logoPanel)
 	
 	# Carga música título
-	if FileAccess.file_exists(MUSIC_PATH):
-		var music = load(MUSIC_PATH)
-		music_player.stream = music
-		music_player.stream.loop = true
-	music_player.play()
+	assetRecognition.load_audio_resource(MUSIC_PATH, TITLE_THEME, music_player)
 	
 	# Carga botones
 	for button in button_container.get_children():
@@ -49,7 +45,9 @@ func _ready():
 func _on_button_pressed(button_name):
 	match button_name:
 		"PlayButton":
-			get_tree().change_scene_to_file("res://scenes/mainMenu.tscn")
+			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
+			get_tree().root.add_child(transition)
+			transition.change_scene("res://scenes/mainMenu.tscn")
 		"OptionsButton":
 			options.visible = true
 		"ExitButton":

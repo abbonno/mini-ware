@@ -2,7 +2,7 @@ extends Node
 
 class_name AssetRecognition
 
-func load_visual_resource(assetsFolder: String, fileName: String, element):
+func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
 	if dir == null:
 		print("ERROR: Carpeta Assets no encontrada:" + assetsFolder)
@@ -10,17 +10,15 @@ func load_visual_resource(assetsFolder: String, fileName: String, element):
 	var files = dir.get_files()
 	var regex = RegEx.new()
 	
-		# Fondo pantalla
 	regex.compile("^" + fileName + "\\.(.+)$")
 	for file in files:
 		var match = regex.search(file)
 		if match:
-			var ext = match.get_string(1).to_lower()
-			var path = assetsFolder + file
-			match_visual_resource(ext, path, element)
-			break
+			return match.get_string(1).to_lower() # Devuelve la extensión del archivo
 
-func match_visual_resource(ext: String, path: String, container):
+func load_visual_resource(assetsFolder: String, fileName: String, container):
+	var ext = get_extension(assetsFolder, fileName)
+	var path = assetsFolder + fileName + "." + ext
 	match ext:
 		"png", "jpg", "jpeg", "webp": # Carga de una imagen
 			var sprite_file = load(path)
@@ -61,4 +59,44 @@ func match_visual_resource(ext: String, path: String, container):
 				print("ERROR: El shader no ha cargado correctamente: ", path)
 				
 		_:
-			print("ERROR: Extensión no soportada:", ext) #inicio control errores, acordarse de poner más
+			print("ERROR: Extensión no soportada: ", ext) #inicio control errores, acordarse de poner más
+
+func load_audio_resource(assetsFolder: String, fileName: String, element): # Más adelante tendremos que controlar que sea una canción o un s
+	var ext = get_extension(assetsFolder, fileName)
+	var path = assetsFolder + fileName + "." + ext
+	match ext:
+		"ogg", "mp3", "wav": # Carga de un audio
+			var music = load(path)
+			if music != null:
+				element.stream = music
+				element.stream.loop = true
+				element.play()
+			else:
+				print("ERROR: La imagen no ha sido cargada correctamente: ", path)
+		_:
+			print("ERROR: Extensión no soportada: ", ext)
+
+func load_json_resource(assetFolder: String, fileName: String, container, JSONelement: String):
+	var path = assetFolder + fileName
+	var file = FileAccess.open(path, FileAccess.READ)
+	if file:
+		var level_data = JSON.parse_string(file.get_as_text())
+		if level_data == null:
+			push_error("ERROR: Fallo en la lectura del JSON", path)
+		container.text = level_data[JSONelement]
+	else:
+		print("ERROR: El JSON no pudo ser abierto ", path)
+
+
+func load_levels_from_directory(path: String, levels):
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var folder_name = dir.get_next()
+		while folder_name != "":
+			if dir.current_is_dir() and not folder_name.begins_with("."):
+				levels.append(folder_name)
+			folder_name = dir.get_next()
+		dir.list_dir_end()
+	else:
+		print("ERROR: No se pudo encontrar el fichero de niveles ", path)
