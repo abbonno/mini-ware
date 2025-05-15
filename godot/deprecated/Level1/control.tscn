@@ -1,0 +1,37 @@
+[gd_scene load_steps=2 format=3 uid="uid://bjdlsihxairma"]
+
+[sub_resource type="GDScript" id="GDScript_htqdu"]
+script/source = "extends Node2D
+
+var time := 0.0
+var duration := 2.0  # segundos antes de cambiar de escena
+var frequency := 2.0
+var amplitude := 50.0
+var speed := 2.0
+var points := []
+
+func _ready():
+	# Cambiar a fondo naranja
+	get_viewport().set_clear_color(Color(1, 0.5, 0))  # naranja
+
+func _process(delta):
+	time += delta
+	update()
+
+	if time >= duration:
+		get_tree().change_scene_to_file(\"res://OtherScene.tscn\")  # Cambia por tu escena destino
+
+func _draw():
+	var width = get_viewport_rect().size.x
+	var height = get_viewport_rect().size.y / 2
+	var wave_points := []
+
+	for x in range(0, int(width), 5):
+		var y = sin((x * 0.02 * frequency) + (time * speed)) * amplitude
+		wave_points.append(Vector2(x, height + y))
+
+	draw_polyline(wave_points, Color.white, 2.0)
+"
+
+[node name="Node2" type="Node2D"]
+script = SubResource("GDScript_htqdu")

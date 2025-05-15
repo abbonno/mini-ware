@@ -2,6 +2,8 @@ extends Node2D
 
 @onready var label = $Label
 
+signal win
+
 func _ready():
 	$Timer.start()
 	$Flag.connect("body_entered", Callable(self, "_on_flag_reached"))
@@ -12,12 +14,15 @@ func _process(delta):
 
 func _on_flag_reached(body):
 	if body.name == "Player":
-		get_tree().change_scene_to_file("res://Levels/Level1/control.tscn")
+		$Timer.stop()
+		emit_signal("win", "yes")
+		queue_free()  # opcional: cierra el minijuego
 
 func _on_time_up():
 	show_result("¡Has perdido!")
+	emit_signal("win", "no")
+	queue_free()  # opcional: cierra el minijuego
 
 func show_result(text):
 	$Label.text = text
 	$Label.show()
-	get_tree().paused = true

@@ -10,12 +10,16 @@ extends Control
 @onready var label1 = $DescriptionPanel/VBoxContainer/MarginContainer/Label
 @onready var label2 = $DescriptionPanel/VBoxContainer/MarginContainer2/Label2
 @onready var label3 = $DescriptionPanel/VBoxContainer/MarginContainer3/RichTextLabel
+@onready var music_player = $MusicPlayer
+
+@onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 const IMG_PATH = "res://Public/Img/"
 const BACKGROUND = "mainMenuBg"
 const LEVEL_PICTURE = "picture"
 const LEVEL_INFO = "info.json"
 const LEVELS_PATH = "res://Levels"
+const MUSIC_PATH = "res://Public/Music/pizza.ogg"
 
 var levels = []
 var current_index = 0
@@ -30,13 +34,17 @@ func _ready():
 	assetRecognition.load_visual_resource(IMG_PATH, BACKGROUND, background)
 	
 	# Cargar música
-	#assetRecognition.load_audio_resource()
+	if !music_manager:
+		music_manager = preload("res://scenes/musicManager.tscn").instantiate()
+		get_tree().get_root().call_deferred("add_child", music_manager)
+		await get_tree().process_frame  # IMPORTANTE call deferred es una llamada asíncrona, por lo que si más tarde llamamos a play music no tendrá los nodos que necesita del árbol, es por eso que añadimos una espera (eS NECESARIA AQUÍ, PONERLA EN LA PROPIA FUNCIÓN DE REPRODUCCIÓN HARÁ QUE SE PRODUZCAN ESPERAS INFINITAS A LOS OTROS NODOS)
+	music_manager.play_music(load(MUSIC_PATH))
 	
 	# Cargar botones
 	for button in button_control.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
 	
-	# Carga los elementos relacionados con el nivel mostrado
+	# Carga los elementos que dependen de "current_index"
 	update_level_display()
 
 func update_level_display():
@@ -52,7 +60,8 @@ func _on_button_pressed(button_name):
 		"OptionsButton":
 			show_options()
 		"PlayButton":
-			get_tree().change_scene_to_file(LEVELS_PATH + "/" + levels[current_index] + "/" + "control.tscn")
+			get_tree().change_scene_to_file("res://scenes/levelManager.tscn")
+			#get_tree().change_scene_to_file(LEVELS_PATH + "/" + levels[current_index] + "/" + "sinewave.tscn") # Por aquí hay que tirar después de acabar completamente con el menu
 		"ReturnButton":
 			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
 			get_tree().root.add_child(transition)

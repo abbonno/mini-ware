@@ -57,24 +57,22 @@ func load_visual_resource(assetsFolder: String, fileName: String, container):
 				container.add_child(shader)
 			else:
 				print("ERROR: El shader no ha cargado correctamente: ", path)
-				
 		_:
 			print("ERROR: Extensión no soportada: ", ext) #inicio control errores, acordarse de poner más
 
-func load_audio_resource(assetsFolder: String, fileName: String, element): # Más adelante tendremos que controlar que sea una canción o un s
-	var ext = get_extension(assetsFolder, fileName)
-	var path = assetsFolder + fileName + "." + ext
-	match ext:
-		"ogg", "mp3", "wav": # Carga de un audio
-			var music = load(path)
-			if music != null:
-				element.stream = music
-				element.stream.loop = true
-				element.play()
-			else:
-				print("ERROR: La imagen no ha sido cargada correctamente: ", path)
-		_:
-			print("ERROR: Extensión no soportada: ", ext)
+func load_audio_resource(node: Node, assetsFolder: String, fileName: String, type): # Más adelante tendremos que controlar que sea una canción o un s
+	if not node.get_tree().get_root().has_node("MusicManager"):
+		var audio_file = load(assetsFolder + fileName)
+		var music_manager = preload("res://scenes/musicManager.tscn").instantiate()
+		music_manager.name = "musicManager"
+		node.get_tree().get_root().call_deferred("add_child", music_manager)
+		match type:
+			"music":
+				music_manager.play_music(audio_file)
+			"sfx":
+				music_manager.play_sfx(audio_file)
+			_:
+				print("Audio type not recognized " + type)
 
 func load_json_resource(assetFolder: String, fileName: String, container, JSONelement: String):
 	var path = assetFolder + fileName

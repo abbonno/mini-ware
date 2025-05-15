@@ -7,15 +7,15 @@ extends Control
 @onready var logoPanel = $LogoPanel
 @onready var music_player = $MusicPlayer
 @onready var button_container = $ButtonContainer
-
 @onready var options = $Options
+
+@onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 const CONFIG_FILE = "res://config/settings.cfg"
 const IMG_PATH = "res://Public/Img/"
 const BACKGROUND = "background"
 const LOGO = "logo"
-const MUSIC_PATH = "res://Public/Music/"
-const TITLE_THEME = "titleTheme"
+const MUSIC_PATH = "res://Public/Music/titleTheme.ogg"
 
 func _ready():
 	# Carga los ajustes guardados
@@ -36,7 +36,11 @@ func _ready():
 	assetRecognition.load_visual_resource(IMG_PATH, LOGO, logoPanel)
 	
 	# Carga música título
-	assetRecognition.load_audio_resource(MUSIC_PATH, TITLE_THEME, music_player)
+	if !music_manager:
+		music_manager = preload("res://scenes/musicManager.tscn").instantiate()
+		get_tree().get_root().call_deferred("add_child", music_manager)
+		await get_tree().process_frame  # IMPORTANTE call deferred es una llamada asíncrona, por lo que si más tarde llamamos a play music no tendrá los nodos que necesita del árbol, es por eso que añadimos una espera (eS NECESARIA AQUÍ, PONERLA EN LA PROPIA FUNCIÓN DE REPRODUCCIÓN HARÁ QUE SE PRODUZCAN ESPERAS INFINITAS A LOS OTROS NODOS)
+	music_manager.play_music(load(MUSIC_PATH))
 	
 	# Carga botones
 	for button in button_container.get_children():

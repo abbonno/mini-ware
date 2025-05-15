@@ -19,7 +19,7 @@ size = Vector2(107, 134.5)
 script = ExtResource("1_1i2tx")
 
 [node name="Timer" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 2.0
 one_shot = true
 
 [node name="Label" type="Label" parent="."]
