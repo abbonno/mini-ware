@@ -49,6 +49,7 @@ func _ready():
 func _on_button_pressed(button_name):
 	match button_name:
 		"PlayButton":
+			music_manager.stop_music()
 			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
 			get_tree().root.add_child(transition)
 			transition.change_scene("res://scenes/mainMenu.tscn")

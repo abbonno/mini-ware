@@ -1,6 +1,6 @@
 {
-	"nombre": "Nivel 2 awawa",
-	"puntuacion": "A",
-	"superado": "false",
-	"descripcion": "Lorem impsum y tal"
+	"level_name": "Nivel 2",
+	"score": "A",
+	"complete": "false",
+	"description": "Lorem impsum y tal"
 }

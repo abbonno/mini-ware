@@ -75,7 +75,7 @@ func load_audio_resource(node: Node, assetsFolder: String, fileName: String, typ
 				print("Audio type not recognized " + type)
 
 func load_json_resource(assetFolder: String, fileName: String, container, JSONelement: String):
-	var path = assetFolder + fileName
+	var path = assetFolder + fileName + ".json"
 	var file = FileAccess.open(path, FileAccess.READ)
 	if file:
 		var level_data = JSON.parse_string(file.get_as_text())

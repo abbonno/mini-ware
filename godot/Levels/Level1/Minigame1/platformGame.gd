@@ -15,12 +15,12 @@ func _process(delta):
 func _on_flag_reached(body):
 	if body.name == "Player":
 		$Timer.stop()
-		emit_signal("win", "yes")
+		emit_signal("win", true)
 		queue_free()  # opcional: cierra el minijuego
 
 func _on_time_up():
 	show_result("¡Has perdido!")
-	emit_signal("win", "no")
+	emit_signal("win", false)
 	queue_free()  # opcional: cierra el minijuego
 
 func show_result(text):

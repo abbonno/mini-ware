@@ -4,25 +4,26 @@ extends Control
 
 @onready var background = $Background
 @onready var level_picture = $LevelPicturePanel/LevelPicture
-@onready var level_label = $LevelLabel
 @onready var button_control = $ButtonControl
+@onready var play_button = $ButtonControl/PlayButton
+@onready var level_name = $LevelName
+@onready var score = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoreLabel
+@onready var complete = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoreLabel
+@onready var description = $LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer/DescriptionLabel
 @onready var options = $Options
-@onready var label1 = $DescriptionPanel/VBoxContainer/MarginContainer/Label
-@onready var label2 = $DescriptionPanel/VBoxContainer/MarginContainer2/Label2
-@onready var label3 = $DescriptionPanel/VBoxContainer/MarginContainer3/RichTextLabel
-@onready var music_player = $MusicPlayer
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 const IMG_PATH = "res://Public/Img/"
 const BACKGROUND = "mainMenuBg"
+const PLAY_ICON = "res://icon.svg"
 const LEVEL_PICTURE = "picture"
-const LEVEL_INFO = "info.json"
+const LEVEL_INFO = "info"
 const LEVELS_PATH = "res://Levels"
-const MUSIC_PATH = "res://Public/Music/pizza.ogg"
+const MUSIC_PATH = "res://Public/Music/mainMenuTheme.ogg"
 
 var levels = []
-var current_index = 0
+var current_index = 0 # en el guardado de la información del juego almacenar el último nivel en el que se estuvo para comenzar desde ahí la próxima vez que se abra
 
 func _ready():
 	options.close_options.connect(_on_close_options)
@@ -31,6 +32,7 @@ func _ready():
 	assetRecognition.load_levels_from_directory(LEVELS_PATH, levels)
 	
 	# Cargar elementos visuales
+	play_button.icon = load(PLAY_ICON) # completar carga icono
 	assetRecognition.load_visual_resource(IMG_PATH, BACKGROUND, background)
 	
 	# Cargar música
@@ -50,18 +52,20 @@ func _ready():
 func update_level_display():
 	var current = LEVELS_PATH + "/" + levels[current_index] + "/"
 	assetRecognition.load_visual_resource(current, LEVEL_PICTURE, level_picture)
-	assetRecognition.load_json_resource(current, LEVEL_INFO, level_label, "nombre")
-	assetRecognition.load_json_resource(current, LEVEL_INFO, label1, "puntuacion")
-	assetRecognition.load_json_resource(current, LEVEL_INFO, label2, "superado")
-	assetRecognition.load_json_resource(current, LEVEL_INFO, label3, "descripcion")
+	assetRecognition.load_json_resource(current, LEVEL_INFO, level_name, "level_name")
+	assetRecognition.load_json_resource(current, LEVEL_INFO, score, "score")
+	assetRecognition.load_json_resource(current, LEVEL_INFO, complete, "complete")
+	assetRecognition.load_json_resource(current, LEVEL_INFO, description, "description")
 
 func _on_button_pressed(button_name):
 	match button_name:
 		"OptionsButton":
 			show_options()
 		"PlayButton":
-			get_tree().change_scene_to_file("res://scenes/levelManager.tscn")
-			#get_tree().change_scene_to_file(LEVELS_PATH + "/" + levels[current_index] + "/" + "sinewave.tscn") # Por aquí hay que tirar después de acabar completamente con el menu
+			music_manager.stop_music()
+			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
+			get_tree().root.add_child(transition)
+			transition.change_scene("res://scenes/levelManager.tscn")
 		"ReturnButton":
 			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
 			get_tree().root.add_child(transition)
