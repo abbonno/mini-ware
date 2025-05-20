@@ -5,7 +5,7 @@ class_name AssetRecognition
 func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
 	if dir == null:
-		print("ERROR: Carpeta Assets no encontrada:" + assetsFolder)
+		print("ERROR: Assets folder could not be found " + assetsFolder)
 		return
 	var files = dir.get_files()
 	var regex = RegEx.new()
@@ -29,7 +29,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container):
 				sprite.expand_mode = TextureRect.EXPAND_FIT_WIDTH
 				container.add_child(sprite)
 			else:
-				print("ERROR: La imagen no ha sido cargada correctamente: ", path)
+				print("ERROR: Image could not be loaded ", path)
 				
 		"webm", "ogv": # Carga de un vídeo
 			var video_file = load(path)
@@ -42,7 +42,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container):
 				video.loop = true
 				container.add_child(video)
 			else:
-				print("ERROR: El vídeo no ha sido cargado correctamente: ", path)
+				print("ERROR: Video could not be loaded ", path)
 				
 		"gdshader": #Carga de un shader
 			var shader_file = load(path)
@@ -56,9 +56,9 @@ func load_visual_resource(assetsFolder: String, fileName: String, container):
 				shader.size_flags_vertical = Control.SIZE_EXPAND_FILL
 				container.add_child(shader)
 			else:
-				print("ERROR: El shader no ha cargado correctamente: ", path)
+				print("ERROR: Shader could not be loaded ", path)
 		_:
-			print("ERROR: Extensión no soportada: ", ext) #inicio control errores, acordarse de poner más
+			print("ERROR: Unsuported extension ", ext) #inicio control errores, acordarse de poner más
 
 func load_audio_resource(node: Node, assetsFolder: String, fileName: String, type): # Más adelante tendremos que controlar que sea una canción o un s
 	if not node.get_tree().get_root().has_node("MusicManager"):
@@ -72,7 +72,7 @@ func load_audio_resource(node: Node, assetsFolder: String, fileName: String, typ
 			"sfx":
 				music_manager.play_sfx(audio_file)
 			_:
-				print("Audio type not recognized " + type)
+				print("ERROR: Audio type not recognized " + type)
 
 func load_json_resource(assetFolder: String, fileName: String, container, JSONelement: String):
 	var path = assetFolder + fileName + ".json"
@@ -80,13 +80,13 @@ func load_json_resource(assetFolder: String, fileName: String, container, JSONel
 	if file:
 		var level_data = JSON.parse_string(file.get_as_text())
 		if level_data == null:
-			push_error("ERROR: Fallo en la lectura del JSON", path)
+			push_error("ERROR: JSON read fail ", path)
 		container.text = level_data[JSONelement]
 	else:
-		print("ERROR: El JSON no pudo ser abierto ", path)
+		print("ERROR: JSON could not be opened ", path)
 
 
-func load_levels_from_directory(path: String, levels):
+func load_levels_from_directory(path: String, levels): # Guarda los nombres de las carpetas en un array
 	var dir = DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
@@ -97,4 +97,4 @@ func load_levels_from_directory(path: String, levels):
 			folder_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: No se pudo encontrar el fichero de niveles ", path)
+		print("ERROR: levels folder could not be found ", path)

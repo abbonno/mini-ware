@@ -8,7 +8,7 @@ extends Control
 @onready var play_button = $ButtonControl/PlayButton
 @onready var level_name = $LevelName
 @onready var score = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoreLabel
-@onready var complete = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoreLabel
+@onready var complete = $LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer/CompleteLabel
 @onready var description = $LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer/DescriptionLabel
 @onready var options = $Options
 
@@ -20,7 +20,7 @@ const PLAY_ICON = "res://icon.svg"
 const LEVEL_PICTURE = "picture"
 const LEVEL_INFO = "info"
 const LEVELS_PATH = "res://Levels"
-const MUSIC_PATH = "res://Public/Music/mainMenuTheme.ogg"
+const MUSIC_PATH = "res://Public/Music/mainMenuTheme"
 
 var levels = []
 var current_index = 0 # en el guardado de la información del juego almacenar el último nivel en el que se estuvo para comenzar desde ahí la próxima vez que se abra
@@ -40,7 +40,7 @@ func _ready():
 		music_manager = preload("res://scenes/musicManager.tscn").instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame  # IMPORTANTE call deferred es una llamada asíncrona, por lo que si más tarde llamamos a play music no tendrá los nodos que necesita del árbol, es por eso que añadimos una espera (eS NECESARIA AQUÍ, PONERLA EN LA PROPIA FUNCIÓN DE REPRODUCCIÓN HARÁ QUE SE PRODUZCAN ESPERAS INFINITAS A LOS OTROS NODOS)
-	music_manager.play_music(load(MUSIC_PATH))
+	music_manager.play_music(load(MUSIC_PATH + ".ogg"))
 	
 	# Cargar botones
 	for button in button_control.get_children():

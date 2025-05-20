@@ -13,9 +13,9 @@ extends Control
 
 const CONFIG_FILE = "res://config/settings.cfg"
 const IMG_PATH = "res://Public/Img/"
-const BACKGROUND = "background"
+const BACKGROUND = "titleBg"
 const LOGO = "logo"
-const MUSIC_PATH = "res://Public/Music/titleTheme.ogg"
+const MUSIC_PATH = "res://Public/Music/titleTheme"
 
 func _ready():
 	# Carga los ajustes guardados
@@ -40,7 +40,7 @@ func _ready():
 		music_manager = preload("res://scenes/musicManager.tscn").instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame  # IMPORTANTE call deferred es una llamada asíncrona, por lo que si más tarde llamamos a play music no tendrá los nodos que necesita del árbol, es por eso que añadimos una espera (eS NECESARIA AQUÍ, PONERLA EN LA PROPIA FUNCIÓN DE REPRODUCCIÓN HARÁ QUE SE PRODUZCAN ESPERAS INFINITAS A LOS OTROS NODOS)
-	music_manager.play_music(load(MUSIC_PATH))
+	music_manager.play_music(load(MUSIC_PATH + ".ogg"))
 	
 	# Carga botones
 	for button in button_container.get_children():
