@@ -1,6 +1,7 @@
 extends Control
 
 signal close_options #para cerrar la pantalla de opciones desde cualquier escena
+signal open_options #para abrir la pantalla de opciones in-game (activar pausa)
 
 @onready var fullscreen = $OptionsPanel/OptionsBackground/OptionsButtonContainer/FullScreenButton
 @onready var volume = $OptionsPanel/OptionsBackground/OptionsButtonContainer/VolumeSlider
@@ -20,14 +21,14 @@ func _ready():
 	volume.value_changed.connect(_on_volume_slider_value_changed)
 	bus_index = AudioServer.get_bus_index("Music")
 
-#func _unhandled_input(event):
-	#if event.is_action_pressed("ui_cancel"): # "ui_cancel" está mapeado por defecto a Esc
-		#if self.visible:
-			#get_tree().paused = true
-			#show()
-		#if !self.visible:
-			#hide()
-			#get_tree().paused = false
+func _unhandled_input(event):
+	if event.is_action_pressed("ui_cancel"): # "ui_cancel" está mapeado por defecto a Esc
+		if self.visible:
+			self.visible = false
+			close_options.emit() #Recordar mandarlo al nodo que lo llama (ya sea el título o alguna otra parte del juego)
+		else:
+			self.visible = true
+			open_options.emit()
 
 func _on_button_pressed(button_name):
 	match button_name:

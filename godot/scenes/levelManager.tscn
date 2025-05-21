@@ -130,3 +130,4 @@ offset_bottom = 102.0
 
 [node name="Options" parent="." instance=ExtResource("3_uur0k")]
 process_mode = 3
+visible = false

@@ -26,8 +26,6 @@ func _ready():
 		var volume = config.get_value("audio", "music_volume", 0.5)
 		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), linear_to_db(volume))
 	
-	options.close_options.connect(_on_close_options)
-	
 	# Carga título juego
 	titleLabel.text = ProjectSettings.get("application/config/name")
 	
@@ -57,6 +55,3 @@ func _on_button_pressed(button_name):
 			options.visible = true
 		"ExitButton":
 			get_tree().quit()
-
-func _on_close_options():
-	options.visible = false

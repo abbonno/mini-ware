@@ -26,8 +26,6 @@ var levels = []
 var current_index = 0 # en el guardado de la información del juego almacenar el último nivel en el que se estuvo para comenzar desde ahí la próxima vez que se abra
 
 func _ready():
-	options.close_options.connect(_on_close_options)
-	
 	# Cargar los niveles (array levels)
 	assetRecognition.load_levels_from_directory(LEVELS_PATH, levels)
 	
@@ -60,7 +58,7 @@ func update_level_display():
 func _on_button_pressed(button_name):
 	match button_name:
 		"OptionsButton":
-			show_options()
+			options.visible = true
 		"PlayButton":
 			music_manager.stop_music()
 			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
@@ -76,10 +74,3 @@ func _on_button_pressed(button_name):
 		"PrevLevelButton":
 			current_index = (current_index - 1) % levels.size()
 			update_level_display()
-
-# Función para abrir las opciones
-func show_options():
-	options.visible = true
-
-func _on_close_options():
-	options.visible = false

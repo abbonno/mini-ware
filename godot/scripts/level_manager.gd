@@ -11,6 +11,7 @@ signal minigame_result(win: bool)
 @onready var minigame_container = $MinigameContainer
 @onready var minigame_timer = $Timer
 @onready var label = $Label
+@onready var options = $Options
 
 var current_minigame_index = 0
 const MAX_LIVES = 4
@@ -30,6 +31,8 @@ enum State { CONTROL, INSTRUCTION, GAME, WIN, LOSE, WIN_END, LOSE_END }
 
 func _ready():
 	minigame_timer.connect("timeout", Callable(self, "_on_time_up"))
+	options.close_options.connect(_on_close_options)
+	options.open_options.connect(_on_open_options)
 	# Cargar popup
 	popup_img.visible = false
 	popup_img.texture = popup
@@ -125,13 +128,19 @@ func main_iteration(state : State):
 
 func _run_timer_feedback():
 	while minigame_timer.time_left > 0:
-		print(minigame_timer.time_left)
+		label.text = str(round(minigame_timer.time_left))
 		await get_tree().create_timer(0.1).timeout
+	label.text = ""
 
 func _on_time_up():
 	emit_signal("minigame_result", false)
-	
+
 func _on_minigame_result(win: bool):
 	minigame_timer.stop()
 	emit_signal("minigame_result", win)
-	
+
+func _on_close_options():
+	get_tree().paused = false
+
+func _on_open_options():
+	get_tree().paused = true
