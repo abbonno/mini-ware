@@ -1,52 +1,10 @@
-[gd_scene load_steps=9 format=3 uid="uid://dfgxx76gh6fe7"]
+[gd_scene load_steps=2 format=3 uid="uid://dfgxx76gh6fe7"]
 
 [ext_resource type="Script" path="res://Levels/Level1/Minigame1/platformGame.gd" id="1_1i2tx"]
-[ext_resource type="Texture2D" uid="uid://bgychrpmkgyjs" path="res://Public/Img/titleBg.jpg" id="2_p2l4c"]
-[ext_resource type="Texture2D" uid="uid://epenj6kgxb1w" path="res://Public/Img/boton.png" id="3_0dgo5"]
-[ext_resource type="Script" path="res://Levels/Level1/Minigame1/player.gd" id="4_ib00n"]
-[ext_resource type="Texture2D" uid="uid://dt3v1imsat7dc" path="res://Levels/Level1/Minigame1/player.png" id="5_s2tiv"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_1xt0e"]
-size = Vector2(143.5, 141)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_lq1d1"]
-size = Vector2(955.5, 32)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_pygus"]
-size = Vector2(107, 134.5)
 
 [node name="PlatformGame" type="Node2D"]
 script = ExtResource("1_1i2tx")
 
-[node name="FlagArea" type="Area2D" parent="."]
-
-[node name="FlagSprite" type="Sprite2D" parent="FlagArea"]
-position = Vector2(929, 488)
-scale = Vector2(0.0725098, 0.113281)
-texture = ExtResource("2_p2l4c")
-
-[node name="FlagCollision" type="CollisionShape2D" parent="FlagArea"]
-position = Vector2(930.25, 487)
-shape = SubResource("RectangleShape2D_1xt0e")
-
-[node name="PlatformStaticBody" type="StaticBody2D" parent="."]
-
-[node name="PlatformSprite" type="Sprite2D" parent="PlatformStaticBody"]
-position = Vector2(529.5, 590)
-scale = Vector2(5.88415, 1)
-texture = ExtResource("3_0dgo5")
-
-[node name="PlatformCollision" type="CollisionShape2D" parent="PlatformStaticBody"]
-position = Vector2(530.25, 589)
-shape = SubResource("RectangleShape2D_lq1d1")
-
-[node name="Player" type="CharacterBody2D" parent="."]
-script = ExtResource("4_ib00n")
-
-[node name="PlayerSprite" type="Sprite2D" parent="Player"]
-position = Vector2(352, 261)
-texture = ExtResource("5_s2tiv")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
-position = Vector2(354.5, 260.75)
-shape = SubResource("RectangleShape2D_pygus")
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1150, 650)
+color = Color(0.481515, 0.734033, 0.265164, 1)

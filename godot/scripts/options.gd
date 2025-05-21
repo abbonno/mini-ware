@@ -20,6 +20,15 @@ func _ready():
 	volume.value_changed.connect(_on_volume_slider_value_changed)
 	bus_index = AudioServer.get_bus_index("Music")
 
+#func _unhandled_input(event):
+	#if event.is_action_pressed("ui_cancel"): # "ui_cancel" está mapeado por defecto a Esc
+		#if self.visible:
+			#get_tree().paused = true
+			#show()
+		#if !self.visible:
+			#hide()
+			#get_tree().paused = false
+
 func _on_button_pressed(button_name):
 	match button_name:
 		"OptionsReturnButton":

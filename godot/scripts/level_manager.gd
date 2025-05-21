@@ -21,6 +21,8 @@ var score = 0
 var video_intro = preload("res://Public/Vid/intro.ogv")
 var video_control = preload("res://Public/Vid/control.ogv")
 var m = preload("res://Levels/Level1/Minigame1/platformGame.tscn")
+var popup = preload("res://Public/Img/POPUP.png")
+var health_icon = preload("res://icon.svg")
 var minigame
 var win
 
@@ -30,11 +32,10 @@ func _ready():
 	minigame_timer.connect("timeout", Callable(self, "_on_time_up"))
 	# Cargar popup
 	popup_img.visible = false
-	popup_img.texture = load("res://Public/Img/POPUP.png")
+	popup_img.texture = popup
 	popup_label.text = "nose"
 	# Cargar vidas+puntuacion
 	health_container.visible = false
-	var health_icon = load("res://icon.svg")
 	for health in health_container.get_children():
 		health.get_child(0).texture = health_icon
 	score_label.visible = false
@@ -56,7 +57,7 @@ func main_iteration(state : State):
 			health_container.visible = true
 			score_label.visible = true
 			
-			await get_tree().create_timer(2).timeout
+			await get_tree().create_timer(2, false).timeout
 			
 			videoPlayer.stop()# Cambiar
 			health_container.visible = false

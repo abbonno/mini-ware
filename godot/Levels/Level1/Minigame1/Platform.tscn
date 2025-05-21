@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://ccmpg7cfeyfdm"]
+
+[ext_resource type="Texture2D" uid="uid://epenj6kgxb1w" path="res://Public/Img/boton.png" id="1_1c37a"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_dc4ug"]
+size = Vector2(257, 32)
+
+[node name="Platform" type="StaticBody2D"]
+
+[node name="PlatformSprite" type="Sprite2D" parent="."]
+position = Vector2(1.5, 0)
+scale = Vector2(1.56707, 1)
+texture = ExtResource("1_1c37a")
+
+[node name="PlatformCollision" type="CollisionShape2D" parent="."]
+position = Vector2(1.5, 0)
+shape = SubResource("RectangleShape2D_dc4ug")
