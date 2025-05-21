@@ -1,5 +1,3 @@
-extends Node
-
 class_name AssetRecognition
 
 func get_extension(assetsFolder: String, fileName: String):

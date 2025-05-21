@@ -11,16 +11,10 @@ extends Control
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
-const CONFIG_FILE = "res://config/settings.cfg"
-const IMG_PATH = "res://Public/Img/"
-const BACKGROUND = "titleBg"
-const LOGO = "logo"
-const MUSIC_PATH = "res://Public/Music/titleTheme"
-
 func _ready():
 	# Carga los ajustes guardados
 	var config = ConfigFile.new()
-	if config.load(CONFIG_FILE) == OK:
+	if config.load(Globals.CONFIG_FILE) == OK:
 		var fullscreen = config.get_value("video", "fullscreen", false)
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		var volume = config.get_value("audio", "music_volume", 0.5)
@@ -30,15 +24,15 @@ func _ready():
 	titleLabel.text = ProjectSettings.get("application/config/name")
 	
 	# Carga recursos visuales
-	assetRecognition.load_visual_resource(IMG_PATH, BACKGROUND, background)
-	assetRecognition.load_visual_resource(IMG_PATH, LOGO, logoPanel)
+	assetRecognition.load_visual_resource(Globals.IMG_PATH, Globals.TITLE_BACKGROUND, background)
+	assetRecognition.load_visual_resource(Globals.IMG_PATH, Globals.TITLE_LOGO, logoPanel)
 	
 	# Carga música título
 	if !music_manager:
-		music_manager = preload("res://scenes/musicManager.tscn").instantiate()
+		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame  # IMPORTANTE call deferred es una llamada asíncrona, por lo que si más tarde llamamos a play music no tendrá los nodos que necesita del árbol, es por eso que añadimos una espera (eS NECESARIA AQUÍ, PONERLA EN LA PROPIA FUNCIÓN DE REPRODUCCIÓN HARÁ QUE SE PRODUZCAN ESPERAS INFINITAS A LOS OTROS NODOS)
-	music_manager.play_music(load(MUSIC_PATH + ".ogg"))
+	music_manager.play_music(load(Globals.MUSIC_PATH + Globals.TITLE_THEME + ".ogg"))
 	
 	# Carga botones
 	for button in button_container.get_children():
@@ -48,9 +42,9 @@ func _on_button_pressed(button_name):
 	match button_name:
 		"PlayButton":
 			music_manager.stop_music()
-			var transition = preload("res://scenes/sceneTransition.tscn").instantiate()
+			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
-			transition.change_scene("res://scenes/mainMenu.tscn")
+			transition.change_scene(Globals.MAIN_MENU_SCENE)
 		"OptionsButton":
 			options.visible = true
 		"ExitButton":
