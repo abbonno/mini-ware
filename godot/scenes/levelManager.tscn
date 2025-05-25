@@ -1,8 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://xcy1pul163hq"]
+[gd_scene load_steps=6 format=3 uid="uid://xcy1pul163hq"]
 
 [ext_resource type="Script" path="res://scripts/level_manager.gd" id="1_l51yg"]
 [ext_resource type="Texture2D" uid="uid://b2sfwuav1sbh4" path="res://icon.svg" id="2_djuho"]
 [ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_uur0k"]
+[ext_resource type="Shader" path="res://others/modulation.gdshader" id="3_vegkp"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f87i4"]
+shader = ExtResource("3_vegkp")
+shader_parameter/time = null
+shader_parameter/intensity = 0.1
 
 [node name="LevelManager" type="Node"]
 script = ExtResource("1_l51yg")
@@ -127,6 +133,15 @@ offset_left = 29.0
 offset_top = 53.0
 offset_right = 123.0
 offset_bottom = 102.0
+
+[node name="shaderEffects" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_f87i4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 
 [node name="Options" parent="." instance=ExtResource("3_uur0k")]
 process_mode = 3

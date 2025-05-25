@@ -12,6 +12,7 @@ signal minigame_result(win: bool)
 @onready var minigame_timer = $Timer
 @onready var label = $Label
 @onready var options = $Options
+@onready var post_process_material = $shaderEffects.material
 
 var current_minigame_index = 0
 const MAX_LIVES = 4
@@ -48,6 +49,10 @@ func _ready():
 	#videoPlayer.play()
 	#await videoPlayer.finished
 	main_iteration(State.CONTROL)
+
+func _process(delta):
+	var t = Time.get_ticks_msec() / 1000.0
+	post_process_material.set_shader_parameter("time", t)
 
 func main_iteration(state : State):
 	match state:
