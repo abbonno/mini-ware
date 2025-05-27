@@ -14,12 +14,30 @@ const MUSIC_PATH = "res://Public/Music/"
 const LEVELS_PATH = "res://Levels"
 
 # Resources' name (for users)
+	# Title
 const TITLE_BACKGROUND = "titleBg"
 const TITLE_LOGO = "logo"
 const TITLE_THEME = "titleTheme"
 
+	# Main menu
 const MAIN_MENU_BACKGROUND = "mainMenuBg"
 const MAIN_MENU_LEVEL_PICTURE = "picture"
 const MAIN_MENU_LEVEL_INFO = "info"
 const MAIN_MENU_THEME = "mainMenuTheme"
 const PLAY_ICON = "icon.svg"
+
+	# Level manager
+const INTRO_VID = "intro"
+const CONTROL_VID = "control"
+const LOSE_VID = "loseVid"
+const WIN_END_VID = "winEndVid"
+const LOSE_END_VID = "loseEndVid"
+
+const HEALTH_SPRITE = "healthSprite"
+const SPEED_UP_POPUP = "speed_up"
+# const INSTRUCTION # The instruction must be defined by the user depending on the instruction field on the minigames info.json
+const MINIGAME_INFO = "info"
+
+const WIN_SFX = "winSFX"
+const LOSE_SFX = "loseSFX"
+const LEVEL_THEME = "levelTheme"

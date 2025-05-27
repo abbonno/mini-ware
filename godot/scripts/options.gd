@@ -34,6 +34,7 @@ func _unhandled_input(event):
 func _on_button_pressed(button_name):
 	match button_name:
 		"OptionsReturnButton":
+			self.visible = false
 			close_options.emit() #Recordar mandarlo al nodo que lo llama (ya sea el título o alguna otra parte del juego)
 		"FullScreenButton":
 			DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if not DisplayServer.window_get_mode() == DisplayServer.WINDOW_MODE_FULLSCREEN else DisplayServer.WINDOW_MODE_WINDOWED)

@@ -44,7 +44,7 @@ func _on_button_pressed(button_name):
 			music_manager.stop_music()
 			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
-			transition.change_scene(Globals.MAIN_MENU_SCENE)
+			transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
 		"OptionsButton":
 			options.visible = true
 		"ExitButton":

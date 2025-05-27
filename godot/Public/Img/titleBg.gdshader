@@ -1,7 +1,4 @@
 shader_type canvas_item;
-//took it directly from balatro source code
-//buy balatro now: https://www.playbalatro.com
-
 
 uniform highp float spin_rotation_speed = 2.0;
 uniform highp float move_speed = 7.0;

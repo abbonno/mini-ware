@@ -14,12 +14,12 @@ extends Control
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
-var levels = []
+var levels_list = []
 var current_index = 0 # en el guardado de la información del juego almacenar el último nivel en el que se estuvo para comenzar desde ahí la próxima vez que se abra
 
 func _ready():
 	# Cargar los niveles (array levels)
-	assetRecognition.load_levels_from_directory(Globals.LEVELS_PATH, levels)
+	assetRecognition.load_names_from_directory(Globals.LEVELS_PATH, levels_list)
 	
 	# Cargar elementos visuales
 	play_button.icon = load(Globals.IMG_PATH + Globals.PLAY_ICON) # completar carga icono
@@ -40,7 +40,7 @@ func _ready():
 	update_level_display()
 
 func update_level_display():
-	var current = Globals.LEVELS_PATH + "/" + levels[current_index] + "/"
+	var current = Globals.LEVELS_PATH + "/" + levels_list[current_index] + "/"
 	assetRecognition.load_visual_resource(current, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
 	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, level_name, "level_name")
 	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, score, "score")
@@ -53,16 +53,22 @@ func _on_button_pressed(button_name):
 			options.visible = true
 		"PlayButton":
 			music_manager.stop_music()
-			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+			var level_index = levels_list[current_index]
+			print(level_index)
+			var levelManagerScene = load(Globals.LEVEL_MANAGER_SCENE).instantiate()
+			levelManagerScene.set_level_index(str(level_index))
+			print(levelManagerScene.level_index)
+			var transition = load(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
-			transition.change_scene(Globals.LEVEL_MANAGER_SCENE)
+			transition.change_scene(levelManagerScene)
 		"ReturnButton":
-			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+			music_manager.stop_music()
+			var transition = load(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
-			transition.change_scene()
+			transition.change_scene(load(Globals.TITLE_SCENE).instantiate())
 		"NextLevelButton":
-			current_index = (current_index + 1) % levels.size()
+			current_index = (current_index + 1) % levels_list.size()
 			update_level_display()
 		"PrevLevelButton":
-			current_index = (current_index - 1) % levels.size()
+			current_index = (current_index - 1) % levels_list.size()
 			update_level_display()
