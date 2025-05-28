@@ -11,7 +11,9 @@ const MAIN_MENU_SCENE = "res://scenes/mainMenu.tscn"
 const CONFIG_FILE = "res://config/settings.cfg"
 const IMG_PATH = "res://Public/Img/"
 const MUSIC_PATH = "res://Public/Music/"
-const LEVELS_PATH = "res://Levels"
+const LEVELS_PATH = "res://Levels/"
+
+const MINIGAMES_DIR = "Minigames/"
 
 # Resources' name (for users)
 	# Title

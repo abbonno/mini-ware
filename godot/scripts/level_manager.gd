@@ -4,35 +4,38 @@ signal minigame_result(win: bool)
 
 @onready var assetRecognition = AssetRecognition.new()
 
-@onready var UIContainer = $UIContainer
-@onready var videoPlayer = $UIContainer/VideoStreamPlayer
+@onready var video_player = $UIContainer/VideoStreamPlayer
 @onready var popup_container = $UIContainer/PopupContainer
-@onready var popup_label = $UIContainer/PopupContainer/PopupLabel
 @onready var health_container = $UIContainer/HealthContainer
 @onready var score_label = $UIContainer/ScoreLabel
 @onready var minigame_container = $MinigameContainer
 @onready var minigame_timer = $Timer
-@onready var timeLabel = $TimeLabel
+@onready var time_label = $TimeIndicatorContainer/TimeIndicatorLabel
+@onready var time_sprite = $TimeIndicatorContainer/TimeIndicatorSpriteContainer
 @onready var options = $Options
 @onready var post_process_material = $shaderEffects.material
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
-var level_index = "Level1"
-var minigames_list = []
-var minigame_index : int = 0
-
 const MAX_LIVES = 1
 const MAX_SCORE = 4
 const SPEED_UP_SCORE = 2
 const MAX_TEMPO = 0.5
-
+const MIN_MINIGAME_DURATION = 2.0
 var lives = MAX_LIVES
 var score = 0
 var tempo = 0
-var minigame_duration = 5
+var minigame_duration = 5 # Habrá que quitarlo una vez se coja la info del minigame
 
-var current_level_path = Globals.LEVELS_PATH + "/" + level_index + "/"
+var endless_mode : bool = false
+var level_index = "Level1" # Cambiarlo una vez se capture la info, aunque más vale dejar cosas por defecto
+var minigames_list = []
+var minigame_index = "Minigame1"
+
+var minigame # guarda la escena del minigame para gestionarla
+
+var current_level_path = Globals.LEVELS_PATH + level_index + "/"
+var minigames_path = current_level_path + Globals.MINIGAMES_DIR
 var video_intro
 var video_control
 var video_lose
@@ -40,15 +43,15 @@ var video_win_end
 var video_lose_end
 var popup # el popup de instrucciones lo gestiona el usuario con el nombre dado en el info.json
 var minigame_info_path
-
 var levelTheme
 
-var win = true
+
+var win : bool = true # Al empezar debe estar en true para que se despliegue la escena de conotrol y no la de lose
 
 enum State { CONTROL, GAME, END }
 
 func _ready():
-	# Cargar paths
+	# Cargar contenido
 	video_intro = load(current_level_path + Globals.INTRO_VID + ".ogv")
 	video_control = load(current_level_path + Globals.CONTROL_VID + ".ogv")
 	video_lose = load(current_level_path + Globals.LOSE_VID + ".ogv")
@@ -58,7 +61,7 @@ func _ready():
 	
 	levelTheme = load(current_level_path + Globals.LEVEL_THEME + ".ogg")
 	
-	minigame_timer.connect("timeout", Callable(self, "_on_time_up"))
+	# Options control
 	options.close_options.connect(_on_close_options)
 	options.open_options.connect(_on_open_options)
 	# Cargar música
@@ -69,7 +72,6 @@ func _ready():
 	
 	# Cargar popup
 	popup_container.visible = false
-	popup_label.text = "nose"
 	
 	# Cargar vidas+puntuacion
 	health_container.visible = false
@@ -79,21 +81,24 @@ func _ready():
 	score_label.text = str(score)
 	
 	# Cargar lista de minijuegos en el nivel
-	assetRecognition.load_names_from_directory(Globals.LEVELS_PATH + "/" + str(level_index), minigames_list)
+	
+	assetRecognition.load_dir_names_from_directory(minigames_path, minigames_list)
 	print(minigames_list)
 	
 	# Cargar cinemática intro
-	introduction_scene()
+	#introduction_scene()
+	music_manager.play_music(levelTheme)
+	main_iteration(State.CONTROL)
 
 func _process(delta):
 	var t = Time.get_ticks_msec() / 1000.0
 	post_process_material.set_shader_parameter("time", t)
 
 func introduction_scene():
-	videoPlayer.stream = video_intro
-	videoPlayer.play()
-	await videoPlayer.finished
-	videoPlayer.stop()
+	video_player.stream = video_intro
+	video_player.play()
+	await video_player.finished
+	video_player.stop()
 	# Cargar música general del nivel
 	music_manager.play_music(levelTheme)
 	main_iteration(State.CONTROL)
@@ -105,14 +110,14 @@ func main_iteration(state : State):
 				#music_manager.play_music(load(Globals.MUSIC_PATH + Globals.LEVEL_THEME + ".ogg"))
 			# Lógica de selección de nivel aleatorio
 			minigame_index = 0
-			minigame_info_path = current_level_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + ".json"
+			minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + ".json"
 			
 			# Vídeo fondo escena control (win/lose)
 			if win:
-				videoPlayer.stream = video_control
+				video_player.stream = video_control
 			if !win:
-				videoPlayer.stream = video_lose
-			videoPlayer.play()
+				video_player.stream = video_lose
+			video_player.play()
 			
 			# Sprites escena de control
 			health_container.visible = true
@@ -120,12 +125,13 @@ func main_iteration(state : State):
 			
 			# Popup y lógica del speed up
 			if !(score % SPEED_UP_SCORE) and score != 0:
-				assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container)
+				assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 				popup_container.visible = true
 				music_manager.music.pitch_scale = 1.1
 				tempo = tempo + 0.1 # podríamos poner un sonido (seta de mario creciendo) y cuando acabe (en vez de la espera) aumentamos el pitch (también habría que pausar la música)
 				await get_tree().create_timer(1, false).timeout
 				popup_container.visible = false
+				popup_container.get_child(0).queue_free()
 			
 			# Visualización normal
 			await get_tree().create_timer(1, false).timeout
@@ -141,29 +147,38 @@ func main_iteration(state : State):
 			# Popup de instructions
 			print(minigame_info_path)
 			popup = assetRecognition.get_json_element(minigame_info_path, "instruction") # Obtener el nombre de la instrucción del nivel escogido
-			assetRecognition.load_visual_resource(current_level_path, popup, popup_container)
+			assetRecognition.load_visual_resource(current_level_path, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 			popup_container.visible = true
 			await get_tree().create_timer(1, false).timeout
 			popup_container.visible = false
+			popup_container.get_child(0).queue_free()
 			
-			videoPlayer.stop()
+			
+			video_player.stop()
 			health_container.visible = false
 			score_label.visible = false
 			main_iteration(State.GAME)
 		State.GAME:
-			var minigame = load("res://Levels/Level1/" + minigames_list[minigame_index] + "/Game.tscn").instantiate()
+			win = false # En este punto es donde se tiene que obtener la información del minigame para saber si tiene que pasar el tiempo (entonces por defecto sería tru) o por lo contrario, si se le acaba el tiempo pierde (en cuyo caso sería false) nombre: survival por ejemplo porque tienes que sobrevivir hasta el final
+			minigame = load(minigames_path + minigames_list[minigame_index] + "/Game.tscn").instantiate()
 			minigame.win.connect(Callable(self, "_on_minigame_result"))
 			minigame_container.add_child(minigame)
-			minigame_timer.wait_time = minigame_duration - minigame_duration*tempo
+			
+			# Controlar por si algún loco mete que el tiempo sea inferior a 2 segundos
+			var min_time = minigame_duration - minigame_duration*tempo
+			if min_time >= MIN_MINIGAME_DURATION:
+				minigame_timer.wait_time = min_time
+			elif min_time < MIN_MINIGAME_DURATION:
+				minigame_timer.wait_time = MIN_MINIGAME_DURATION
 			minigame_timer.start()
 			_run_timer_feedback()
-			win = await self.minigame_result
+			await minigame_timer.timeout
 			for child in minigame_container.get_children():
 				child.queue_free()
 			if win:
 				score = score+1
 				score_label.text = str(score)
-				if score >= MAX_SCORE:
+				if score >= MAX_SCORE and !endless_mode:
 					main_iteration(State.END)
 					return
 			else:
@@ -175,12 +190,14 @@ func main_iteration(state : State):
 			main_iteration(State.CONTROL)
 		State.END:
 			if win:
-				videoPlayer.stream = video_win_end
+				video_player.stream = video_win_end
+				# Guardar que el juego ha sido completado y la calidad (si ha perdido vidas 0: S, 1: A, 2: B, 3: C)
 			else:
-				videoPlayer.stream = video_lose_end
-			videoPlayer.play()
+				video_player.stream = video_lose_end
+				# Guardar los datos de la puntuación en caso de que el nivel no estuviera completado antes
+			video_player.play()
+			# await video_player.finished
 			await get_tree().create_timer(1, false).timeout
-			# Antes de volver al menú, pasar por una escena épica de victoria (video hasta que acabe)
 			music_manager.music.pitch_scale = 1
 			music_manager.stop_music()
 			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
@@ -188,17 +205,45 @@ func main_iteration(state : State):
 			transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
 
 func _run_timer_feedback():
+	var animation_activa = false
+	time_label.visible = true
 	while minigame_timer.time_left > 0:
-		timeLabel.text = str(round(minigame_timer.time_left))
-		await get_tree().create_timer(0.1).timeout
-	timeLabel.text = ""
+		time_label.text = str(minigame_timer.time_left)
+		if minigame_timer.time_left <= MIN_MINIGAME_DURATION and !animation_activa:
+			_run_clock_animation("sprite")
+			animation_activa = true
+		
+		await get_tree().create_timer(0.1, false).timeout
+	time_label.visible = false
 
-func _on_time_up():
-	emit_signal("minigame_result", false)
+func _run_clock_animation(type: String):
+	time_sprite.visible = true
+	if type == "sprite":
+		var clocks_list = []
+		assetRecognition.load_file_names_from_directory(current_level_path + "Clock", clocks_list)
+		var tiempo_frame : float = MIN_MINIGAME_DURATION/clocks_list.size() - 0.05
+		for clock in clocks_list:
+			assetRecognition.load_visual_resource(current_level_path + "Clock/", clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
+			await get_tree().create_timer(tiempo_frame, false).timeout
+			time_sprite.get_child(0).queue_free()
+	
+	time_sprite.visible = false
 
-func _on_minigame_result(win: bool):
-	minigame_timer.stop()
-	emit_signal("minigame_result", win)
+func _on_minigame_result(win_signal: bool):
+	self.win = win_signal
+	if minigame_timer.time_left > 2:
+		minigame_timer.start(2) # En vez de detener el timer, pone los dos segundos de cronómetro y la señal que desactiva la espera es la del timer (ver cómo mandarle el dato win)
+	_set_paused_recursively(minigame_container.get_child(0), true) 
+
+func _set_paused_recursively(node: Node, paused: bool) -> void:
+	node.set_process(not paused)
+	node.set_physics_process(not paused)
+	node.set_process_input(not paused)
+	node.set_process_unhandled_input(not paused)
+	node.set_process_unhandled_key_input(not paused)
+	for child in node.get_children():
+		if child is Node:
+			_set_paused_recursively(child, paused)
 
 func _on_close_options():
 	get_tree().paused = false

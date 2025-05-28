@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bgh87ui2shwri"
-path="res://.godot/imported/instruction123.png-0a038dcf6db5a4708330f9be839e3015.ctex"
+uid="uid://liqc5kr6jolg"
+path="res://.godot/imported/reloj2.png-d8d230b046a82bfd03c0810830e5926a.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Levels/Level1/instruction123.png"
-dest_files=["res://.godot/imported/instruction123.png-0a038dcf6db5a4708330f9be839e3015.ctex"]
+source_file="res://Levels/Level1/Clock/reloj2.png"
+dest_files=["res://.godot/imported/reloj2.png-d8d230b046a82bfd03c0810830e5926a.ctex"]
 
 [params]
 

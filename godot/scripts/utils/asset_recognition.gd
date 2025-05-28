@@ -10,11 +10,13 @@ func get_extension(assetsFolder: String, fileName: String):
 	
 	regex.compile("^" + fileName + "\\.(.+)$")
 	for file in files:
+		if file.ends_with(".import"):
+			continue # Ignora los archivos .import
 		var match = regex.search(file)
 		if match:
 			return match.get_string(1).to_lower() # Devuelve la extensión del archivo
 
-func load_visual_resource(assetsFolder: String, fileName: String, container):
+func load_visual_resource(assetsFolder: String, fileName: String, container, expand = TextureRect.EXPAND_FIT_WIDTH, stretch = TextureRect.STRETCH_SCALE, anchors = Control.PRESET_FULL_RECT):
 	var ext = get_extension(assetsFolder, fileName)
 	var path = assetsFolder + fileName + "." + ext
 	match ext:
@@ -23,8 +25,9 @@ func load_visual_resource(assetsFolder: String, fileName: String, container):
 			if sprite_file != null:
 				var sprite = TextureRect.new()
 				sprite.texture = sprite_file
-				sprite.set_anchors_preset(Control.PRESET_FULL_RECT)
-				sprite.expand_mode = TextureRect.EXPAND_FIT_WIDTH
+				sprite.expand_mode = expand
+				sprite.stretch_mode = stretch
+				sprite.set_anchors_preset(anchors)
 				container.add_child(sprite)
 			else:
 				print("ERROR: Image could not be loaded ", path)
@@ -74,7 +77,6 @@ func load_audio_resource(node: Node, assetsFolder: String, fileName: String, typ
 
 func get_json_element(JSONpath: String, JSONelement: String) -> String:
 	var file = FileAccess.open(JSONpath, FileAccess.READ)
-	print(file)
 	var infoData
 	var fileData = JSON.parse_string(file.get_as_text())
 	infoData = fileData[JSONelement]
@@ -89,7 +91,7 @@ func load_json_resource(assetFolder: String, fileName: String, container, JSONel
 		print("ERROR: JSON could not be opened ", path)
 
 # Loads the name of the directories contained in the path folder
-func load_names_from_directory(path: String, dir_list):
+func load_dir_names_from_directory(path: String, dir_list):
 	var dir = DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
@@ -100,4 +102,21 @@ func load_names_from_directory(path: String, dir_list):
 			folder_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: levels folder could not be found ", path)
+		print("ERROR: folder could not be found ", path)
+
+func load_file_names_from_directory(path: String, file_list):
+	var dir = DirAccess.open(path)
+	if dir:
+		dir.list_dir_begin()
+		var file_name = dir.get_next()
+		while file_name != "":
+			if not dir.current_is_dir() and not file_name.begins_with(".") and not file_name.ends_with(".import"):
+				var dot_index = file_name.rfind(".")
+				if dot_index != -1:
+					var base_name = file_name.substr(0, dot_index)
+					if not file_list.has(base_name): # evita duplicados si hay reloj14.png y reloj14.import
+						file_list.append(base_name)
+			file_name = dir.get_next()
+		dir.list_dir_end()
+	else:
+		print("ERROR: folder could not be found ", path)

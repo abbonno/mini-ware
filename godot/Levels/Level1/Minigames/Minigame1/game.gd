@@ -2,9 +2,9 @@ extends Node2D
 
 signal win
 
-@onready var player_scene = preload("res://Levels/Level1/Minigame1/Player.tscn")
-@onready var platform_scene = preload("res://Levels/Level1/Minigame1/Platform.tscn")
-@onready var flag_scene = preload("res://Levels/Level1/Minigame1/Flag.tscn")
+@onready var player_scene = preload("res://Levels/Level1/Minigames/Minigame1/Player.tscn")
+@onready var platform_scene = preload("res://Levels/Level1/Minigames/Minigame1/Platform.tscn")
+@onready var flag_scene = preload("res://Levels/Level1/Minigames/Minigame1/Flag.tscn")
 
 func _ready():
 	var pattern = choose_level_pattern()
@@ -45,7 +45,7 @@ func spawn_level(pattern: Array):
 
 func _on_win():
 	print("¡Victoria!")
-	emit_signal("win", true)  # Si estás usando tu propio sistema de señales
+	emit_signal("win", true)
 
 func _on_player_fell():
 	print("Jugador cayó")

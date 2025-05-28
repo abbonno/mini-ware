@@ -19,7 +19,7 @@ var current_index = 0 # en el guardado de la información del juego almacenar el
 
 func _ready():
 	# Cargar los niveles (array levels)
-	assetRecognition.load_names_from_directory(Globals.LEVELS_PATH, levels_list)
+	assetRecognition.load_dir_names_from_directory(Globals.LEVELS_PATH, levels_list)
 	
 	# Cargar elementos visuales
 	play_button.icon = load(Globals.IMG_PATH + Globals.PLAY_ICON) # completar carga icono

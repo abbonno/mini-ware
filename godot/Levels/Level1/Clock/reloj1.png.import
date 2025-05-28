@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dt3v1imsat7dc"
-path="res://.godot/imported/player.png-f2616d87deb2571bf803d85e1de9b0b5.ctex"
+uid="uid://bgerfnc2atfb5"
+path="res://.godot/imported/reloj1.png-223c9059da290edc774652cce92e7aec.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Levels/Level1/Minigame1/player.png"
-dest_files=["res://.godot/imported/player.png-f2616d87deb2571bf803d85e1de9b0b5.ctex"]
+source_file="res://Levels/Level1/Clock/reloj1.png"
+dest_files=["res://.godot/imported/reloj1.png-223c9059da290edc774652cce92e7aec.ctex"]
 
 [params]
 

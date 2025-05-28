@@ -2,5 +2,6 @@
 	"level_name": "Nivel 2",
 	"score": "A",
 	"complete": "false",
-	"description": "Lorem impsum y tal"
+	"description": "Lorem impsum y tal",
+	"clock_animation": "shader"
 }
