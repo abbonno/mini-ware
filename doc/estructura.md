@@ -49,3 +49,5 @@ EventManager	Gestiona eventos del juego como diálogos, acciones y lógica.
 InputManager	Captura las entradas del usuario (teclado, ratón, táctil).
 ResourceLoader	Carga dinámicamente imágenes, sonidos y configuraciones.
 HUD/UI	Interfaz gráfica común a todos los juegos (barra de vida, botones, texto).
+
+...
