@@ -78,3 +78,11 @@ horizontal_alignment = 1
 [node name="OptionsReturnButton" type="Button" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
 layout_mode = 2
 text = "Return"
+
+[node name="OptionsExitButton" type="Button" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
+layout_mode = 2
+text = "Exit Level"
+
+[node name="ConfirmExitDialog" type="ConfirmationDialog" parent="."]
+
+[connection signal="confirmed" from="ConfirmExitDialog" to="." method="_on_confirm_exit_dialog_confirmed"]

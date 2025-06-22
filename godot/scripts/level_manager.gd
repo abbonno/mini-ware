@@ -17,6 +17,8 @@ signal minigame_result(win: bool)
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
+var rng = RandomNumberGenerator.new()
+
 const MAX_LIVES = 1
 const MAX_SCORE = 2
 const SPEED_UP_SCORE = 2
@@ -28,7 +30,8 @@ var minigame_duration = 4.0 # Habrá que quitarlo una vez se coja la info del mi
 var endless_mode : bool = false
 var level_index = "Level1" # Cambiarlo una vez se capture la info, aunque más vale dejar cosas por defecto
 var minigames_list = []
-var minigame_index = "Minigame1"
+var prev_minigame_index = -1
+var minigame_index = -1
 
 var minigame # guarda la escena del minigame para gestionarla
 
@@ -61,8 +64,11 @@ func _ready():
 	levelTheme = load(current_level_path + Globals.LEVEL_THEME + ".ogg")
 	
 	# Options control
+	options.show_exit_button(true)
 	options.close_options.connect(_on_close_options)
 	options.open_options.connect(_on_open_options)
+	options.connect("exit_to_main_menu", Callable(self, "_on_exit_requested"))
+	
 	# Cargar música
 	if !music_manager:
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
@@ -103,13 +109,24 @@ func introduction_scene():
 	music_manager.play_music(levelTheme)
 	main_iteration(State.CONTROL)
 
+func choose_next_minigame_index() -> int:
+	if minigames_list.size() <= 1:
+		return 0  # No hay forma de evitar la repetición
+
+	var new_index := randi() % minigames_list.size()
+	while new_index == prev_minigame_index:
+		new_index = randi() % minigames_list.size()
+
+	prev_minigame_index = new_index
+	return new_index
+
 func main_iteration(state : State):
 	match state:
 		State.CONTROL:
 			#if !music_manager.music.playing:
 				#music_manager.play_music(load(Globals.MUSIC_PATH + Globals.LEVEL_THEME + ".ogg"))
 			# Lógica de selección de nivel aleatorio
-			minigame_index = 1
+			minigame_index = choose_next_minigame_index()
 			minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + ".json"
 			
 			# Vídeo fondo escena control (win/lose)
@@ -244,6 +261,13 @@ func _on_close_options():
 
 func _on_open_options():
 	get_tree().paused = true
+
+func _on_exit_requested():
+	music_manager.music.pitch_scale = 1
+	music_manager.stop_music()
+	var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+	get_tree().root.add_child(transition)
+	transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
 
 func set_level_index(index):
 	level_index = index
