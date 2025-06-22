@@ -125,7 +125,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Ant. nivel"
 
-[node name="CheckButton" type="CheckButton" parent="ButtonControl"]
+[node name="EndlessModeButton" type="CheckButton" parent="ButtonControl"]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -140,7 +140,7 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Endless"
 
-[node name="Button" type="Button" parent="ButtonControl"]
+[node name="WidgetsButton" type="Button" parent="ButtonControl"]
 layout_mode = 1
 anchors_preset = 5
 anchor_left = 0.5

@@ -11,6 +11,7 @@ extends Control
 @onready var complete = $LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer/CompleteLabel
 @onready var description = $LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer/DescriptionLabel
 @onready var options = $Options
+@onready var endless_mode = $ButtonControl/EndlessModeButton
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
@@ -57,7 +58,7 @@ func _on_button_pressed(button_name):
 			print(level_index)
 			var levelManagerScene = load(Globals.LEVEL_MANAGER_SCENE).instantiate()
 			levelManagerScene.set_level_index(str(level_index))
-			print(levelManagerScene.level_index)
+			levelManagerScene.set_endless(endless_mode.button_pressed)
 			var transition = load(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
 			transition.change_scene(levelManagerScene)

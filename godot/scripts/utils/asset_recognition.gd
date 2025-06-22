@@ -45,17 +45,25 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 			else:
 				print("ERROR: Video could not be loaded ", path)
 				
-		"gdshader": #Carga de un shader
+		"gdshader": # Carga de un shader
+			print(path)
 			var shader_file = load(path)
-			if shader_file != null:
+			if shader_file != null and shader_file is Shader:
 				var shader_material = ShaderMaterial.new()
 				shader_material.shader = shader_file
-				var shader = ColorRect.new()
-				shader.material = shader_material
-				shader.set_anchors_preset(Control.PRESET_FULL_RECT)
-				shader.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				shader.size_flags_vertical = Control.SIZE_EXPAND_FILL
-				container.add_child(shader)
+
+				var shader_node = ColorRect.new()
+				shader_node.material = shader_material
+				shader_node.set_anchors_preset(Control.PRESET_FULL_RECT)
+				shader_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				shader_node.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+				container.add_child(shader_node)
+
+				# Esperamos a que el nodo tenga tamaño real para pasar la resolución
+				await shader_node.ready
+				print(container.size)
+				shader_material.set_shader_parameter("resolution", container.size)
 			else:
 				print("ERROR: Shader could not be loaded ", path)
 		_:
@@ -75,7 +83,7 @@ func load_audio_resource(node: Node, assetsFolder: String, fileName: String, typ
 			_:
 				print("ERROR: Audio type not recognized " + type)
 
-func get_json_element(JSONpath: String, JSONelement: String) -> String:
+func get_json_element(JSONpath: String, JSONelement: String):
 	var file = FileAccess.open(JSONpath, FileAccess.READ)
 	var infoData
 	var fileData = JSON.parse_string(file.get_as_text())

@@ -18,14 +18,12 @@ signal minigame_result(win: bool)
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 const MAX_LIVES = 1
-const MAX_SCORE = 4
+const MAX_SCORE = 2
 const SPEED_UP_SCORE = 2
-const MAX_TEMPO = 0.5
 const MIN_MINIGAME_DURATION = 2.0
 var lives = MAX_LIVES
 var score = 0
-var tempo = 0
-var minigame_duration = 5 # Habrá que quitarlo una vez se coja la info del minigame
+var minigame_duration = 4.0 # Habrá que quitarlo una vez se coja la info del minigame
 
 var endless_mode : bool = false
 var level_index = "Level1" # Cambiarlo una vez se capture la info, aunque más vale dejar cosas por defecto
@@ -51,6 +49,7 @@ var win : bool = true # Al empezar debe estar en true para que se despliegue la 
 enum State { CONTROL, GAME, END }
 
 func _ready():
+	
 	# Cargar contenido
 	video_intro = load(current_level_path + Globals.INTRO_VID + ".ogv")
 	video_control = load(current_level_path + Globals.CONTROL_VID + ".ogv")
@@ -80,10 +79,11 @@ func _ready():
 	score_label.visible = false
 	score_label.text = str(score)
 	
+	# Obtenemos la carpeta del nivel
+	current_level_path = Globals.LEVELS_PATH + level_index + "/"
+	minigames_path = current_level_path + Globals.MINIGAMES_DIR
 	# Cargar lista de minijuegos en el nivel
-	
 	assetRecognition.load_dir_names_from_directory(minigames_path, minigames_list)
-	print(minigames_list)
 	
 	# Cargar cinemática intro
 	#introduction_scene()
@@ -109,7 +109,7 @@ func main_iteration(state : State):
 			#if !music_manager.music.playing:
 				#music_manager.play_music(load(Globals.MUSIC_PATH + Globals.LEVEL_THEME + ".ogg"))
 			# Lógica de selección de nivel aleatorio
-			minigame_index = 0
+			minigame_index = 1
 			minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + ".json"
 			
 			# Vídeo fondo escena control (win/lose)
@@ -124,11 +124,10 @@ func main_iteration(state : State):
 			score_label.visible = true
 			
 			# Popup y lógica del speed up
-			if !(score % SPEED_UP_SCORE) and score != 0:
+			if !(score % SPEED_UP_SCORE) and score != 0 and music_manager.music.pitch_scale < 2:
 				assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 				popup_container.visible = true
-				music_manager.music.pitch_scale = 1.1
-				tempo = tempo + 0.1 # podríamos poner un sonido (seta de mario creciendo) y cuando acabe (en vez de la espera) aumentamos el pitch (también habría que pausar la música)
+				music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 # podríamos poner un sonido (seta de mario creciendo) y cuando acabe (en vez de la espera) aumentamos el pitch (también habría que pausar la música)
 				await get_tree().create_timer(1, false).timeout
 				popup_container.visible = false
 				popup_container.get_child(0).queue_free()
@@ -136,16 +135,7 @@ func main_iteration(state : State):
 			# Visualización normal
 			await get_tree().create_timer(1, false).timeout
 			
-		#var path = minigame_info
-		#var file = FileAccess.open(minigame_info, FileAccess.READ)
-		#if file:
-			#var data = JSON.parse_string(file.get_as_text())
-		#if data == null:
-			#push_error("ERROR: JSON read fail ", path)
-		#container.text = data[JSONelement]
-		
 			# Popup de instructions
-			print(minigame_info_path)
 			popup = assetRecognition.get_json_element(minigame_info_path, "instruction") # Obtener el nombre de la instrucción del nivel escogido
 			assetRecognition.load_visual_resource(current_level_path, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 			popup_container.visible = true
@@ -153,23 +143,23 @@ func main_iteration(state : State):
 			popup_container.visible = false
 			popup_container.get_child(0).queue_free()
 			
-			
 			video_player.stop()
 			health_container.visible = false
 			score_label.visible = false
 			main_iteration(State.GAME)
 		State.GAME:
-			win = false # En este punto es donde se tiene que obtener la información del minigame para saber si tiene que pasar el tiempo (entonces por defecto sería tru) o por lo contrario, si se le acaba el tiempo pierde (en cuyo caso sería false) nombre: survival por ejemplo porque tienes que sobrevivir hasta el final
+			win = assetRecognition.get_json_element(minigame_info_path, "survival") == "true"
 			minigame = load(minigames_path + minigames_list[minigame_index] + "/Game.tscn").instantiate()
 			minigame.win.connect(Callable(self, "_on_minigame_result"))
 			minigame_container.add_child(minigame)
 			
-			# Controlar por si algún loco mete que el tiempo sea inferior a 2 segundos
-			var min_time = minigame_duration - minigame_duration*tempo
+			# Asignar tiempo del minijuego al contador (controlar por si algún loco mete que el tiempo sea inferior a 2 segundos)
+			var min_time = assetRecognition.get_json_element(minigame_info_path, "duration")
 			if min_time >= MIN_MINIGAME_DURATION:
 				minigame_timer.wait_time = min_time
 			elif min_time < MIN_MINIGAME_DURATION:
 				minigame_timer.wait_time = MIN_MINIGAME_DURATION
+			
 			minigame_timer.start()
 			_run_timer_feedback()
 			await minigame_timer.timeout
@@ -221,11 +211,15 @@ func _run_clock_animation(type: String):
 	if type == "sprite":
 		var clocks_list = []
 		assetRecognition.load_file_names_from_directory(current_level_path + "Clock", clocks_list)
-		var tiempo_frame : float = MIN_MINIGAME_DURATION/clocks_list.size() - 0.05
+		var tiempo_frame : float = minigame_timer.time_left/clocks_list.size() - 0.05
 		for clock in clocks_list:
 			assetRecognition.load_visual_resource(current_level_path + "Clock/", clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
 			await get_tree().create_timer(tiempo_frame, false).timeout
 			time_sprite.get_child(0).queue_free()
+	if type == "shader":
+		assetRecognition.load_visual_resource(current_level_path + "Clock/", "reloj", time_sprite)
+		await get_tree().create_timer(2, false).timeout
+		time_sprite.get_child(0).queue_free()
 	
 	time_sprite.visible = false
 
@@ -253,3 +247,6 @@ func _on_open_options():
 
 func set_level_index(index):
 	level_index = index
+	
+func set_endless(endless: bool):
+	endless_mode = endless
