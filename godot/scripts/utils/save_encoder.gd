@@ -1,6 +1,4 @@
-extends Node
-
-const SECRET_KEY = "miniwareGodot" #no cambiar esta
+class_name SaveEncoder
 
 func save_encoded_json(path: String, data: Dictionary) -> void:
 	var json_text := JSON.stringify(data)

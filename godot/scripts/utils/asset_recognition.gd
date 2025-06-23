@@ -1,5 +1,7 @@
 class_name AssetRecognition
 
+
+
 # General
 ## Obtains the file extension, used to detect its type
 func get_extension(assetsFolder: String, fileName: String):
@@ -127,7 +129,50 @@ func get_json_element(json_path: String, key_path: String, default_value = null)
 	if typeof(json_data) != TYPE_DICTIONARY:
 		return default_value
 
-	# Soporte para claves tipo "Level1/score" o "Settings/Video/Resolution"
+	var keys = key_path.split("/")
+	var current = json_data
+
+	for key in keys:
+		if typeof(current) != TYPE_DICTIONARY or not current.has(key):
+			return default_value
+		current = current[key]
+
+	return current
+
+## Returns JSONelement found in JSON file given by JSONpath after decoding it
+func get_encrypted_json_element(json_path: String, key_path: String, default_value = null):
+	if not FileAccess.file_exists(json_path):
+		return default_value
+
+	var file = FileAccess.open(json_path, FileAccess.READ)
+	if not file:
+		return default_value
+
+	var content := file.get_as_text().strip_edges()
+	file.close()
+
+	if content == "":
+		return default_value
+
+	var parsed = JSON.parse_string(content)
+	if typeof(parsed) != TYPE_DICTIONARY:
+		return default_value
+
+	if not parsed.has("data") or not parsed.has("hash"):
+		return default_value
+
+	var data_text = parsed["data"]
+	var stored_hash = parsed["hash"]
+	var recalculated_hash = SaveEncoder.new()._generate_hash(data_text)
+
+	if stored_hash != recalculated_hash:
+		push_error("Data has been manipulated!")
+		return default_value
+
+	var json_data = JSON.parse_string(data_text)
+	if typeof(json_data) != TYPE_DICTIONARY:
+		return default_value
+
 	var keys = key_path.split("/")
 	var current = json_data
 

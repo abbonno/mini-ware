@@ -1,11 +1,4 @@
 {
-	"Level1": {
-		"complete": true,
-		"endless_score": 1,
-		"score": "S"
-	},
-	"Level2": {
-		"complete": true,
-		"score": "S"
-	}
+	"data": "{\"Level1\":{\"complete\":true,\"score\":\"S\"}}",
+	"hash": "365bfc031a4969e79bbb91918e55890191a582d3408b4de1f910cbe08f731bd0"
 }

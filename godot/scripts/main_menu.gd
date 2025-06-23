@@ -57,9 +57,9 @@ func update_level_display(index : int):
 	print(Globals.DATA_FILE)
 	print(levels_list[index] + "/score")
 	print(assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---"))
-	score.text = assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")
-	endless_score.text = str(assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/endless_score", 0))
-	if assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/complete", false):
+	score.text = assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")
+	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/endless_score", 0))
+	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/complete", false):
 		complete.text = "COMPLETE"
 		complete.set("theme_override_colors/font_color", Color.GREEN)
 	else:

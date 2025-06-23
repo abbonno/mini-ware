@@ -16,6 +16,7 @@ signal minigame_result(win: bool)
 @onready var post_process_material = $shaderEffects.material
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
+@onready var saveEncoder = SaveEncoder.new()
 
 const MAX_LIVES = 4
 const MAX_SCORE = 2
@@ -221,30 +222,16 @@ func main_iteration(state : State):
 func update_level_info(data_path: String, level_key: String, field: String, mode_score):
 	var score_rank = { "S": 4, "A": 3, "B": 2, "C": 1 }
 
-	# Cargar archivo
-	var file: FileAccess
-	var json_data = {}
+	# Leer datos con verificación de integridad
+	var json_data: Dictionary = saveEncoder.load_encoded_json(data_path)
 
-	if FileAccess.file_exists(data_path):
-		file = FileAccess.open(data_path, FileAccess.READ)
-		var content = file.get_as_text().strip_edges()
-		file.close()
-
-		if content != "":
-			var parsed = JSON.parse_string(content)
-			if typeof(parsed) == TYPE_DICTIONARY:
-				json_data = parsed
-	else:
-		print("Creando nuevo archivo de datos...")
-
-	# Asegurar que el nivel existe en el diccionario
+	# Asegurar que el nivel existe
 	if not json_data.has(level_key):
 		json_data[level_key] = {}
 
-	# Obtener el diccionario del nivel
 	var level_data = json_data[level_key]
 
-	# Actualizar campos según la lógica de puntuación
+	# Actualizar campos
 	if field == "score":
 		var current_score = str(level_data.get("score", "C"))
 		if score_rank.has(current_score) and score_rank.has(mode_score):
@@ -254,10 +241,9 @@ func update_level_info(data_path: String, level_key: String, field: String, mode
 	elif field == "endless_score":
 		level_data["endless_score"] = mode_score
 
-	# Guardar el archivo actualizado
-	file = FileAccess.open(data_path, FileAccess.WRITE)
-	file.store_string(JSON.stringify(json_data, "\t"))
-	file.close()
+	# Guardar de vuelta con codificación
+	json_data[level_key] = level_data
+	saveEncoder.save_encoded_json(data_path, json_data)
 
 
 func _run_timer_feedback():
