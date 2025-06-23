@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://daevr227b5pbk"]
+
+[ext_resource type="Script" path="res://Levels/Level1/Minigames/Minigame1/flag.gd" id="1_httje"]
+[ext_resource type="Texture2D" uid="uid://bgychrpmkgyjs" path="res://Public/Img/titleBg.jpg" id="2_xy4wy"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a482i"]
+size = Vector2(149, 130)
+
+[node name="Flag" type="Area2D"]
+script = ExtResource("1_httje")
+
+[node name="FlagSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.0725098, 0.113281)
+texture = ExtResource("2_xy4wy")
+
+[node name="FlagCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0.5, 0)
+shape = SubResource("RectangleShape2D_a482i")

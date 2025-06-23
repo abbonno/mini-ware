@@ -1,0 +1,16 @@
+[gd_scene load_steps=4 format=3 uid="uid://b3esrk1eut80e"]
+
+[ext_resource type="Script" path="res://Levels/Level1/Minigames/Minigame1/player.gd" id="1_81ivy"]
+[ext_resource type="Texture2D" uid="uid://dt3v1imsat7dc" path="res://Levels/Level1/Minigames/Minigame1/player.png" id="2_ecbcg"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_67aqp"]
+size = Vector2(107, 134.5)
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_81ivy")
+
+[node name="PlayerSprite" type="Sprite2D" parent="."]
+texture = ExtResource("2_ecbcg")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("RectangleShape2D_67aqp")

@@ -1,0 +1,226 @@
+[gd_scene load_steps=4 format=3 uid="uid://b22v6fnqcqds2"]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_i6vpc"]
+[ext_resource type="Texture2D" uid="uid://b2sfwuav1sbh4" path="res://icon.svg" id="2_tdmgd"]
+[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_7sua4"]
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i6vpc")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LevelPicturePanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -150.0
+offset_top = -150.0
+offset_right = 150.0
+offset_bottom = 150.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LevelPicture" type="TextureRect" parent="LevelPicturePanel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -130.0
+offset_top = -131.0
+offset_right = 130.0
+offset_bottom = 131.0
+grow_horizontal = 2
+grow_vertical = 2
+expand_mode = 4
+
+[node name="ButtonControl" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionsButton" type="Button" parent="ButtonControl"]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 26.0
+offset_right = 119.0
+offset_bottom = 57.0
+text = "Opciones"
+
+[node name="PlayButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -191.0
+offset_top = -162.0
+offset_right = 192.0
+offset_bottom = -26.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 90
+text = "Play"
+icon = ExtResource("2_tdmgd")
+
+[node name="ReturnButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 39.0
+offset_top = -99.0
+offset_right = 165.0
+offset_bottom = -30.0
+grow_vertical = 0
+text = "Return"
+
+[node name="NextLevelButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 206.0
+offset_top = -25.0
+offset_right = 302.0
+offset_bottom = 76.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Sig. nivel"
+
+[node name="PrevLevelButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -305.0
+offset_top = -30.0
+offset_right = -215.0
+offset_bottom = 63.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Ant. nivel"
+
+[node name="EndlessModeButton" type="CheckButton" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 212.0
+offset_top = 189.0
+offset_right = 334.0
+offset_bottom = 257.0
+grow_horizontal = 2
+grow_vertical = 2
+text = "Endless"
+
+[node name="WidgetsButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -519.0
+offset_top = 269.0
+offset_right = -413.0
+offset_bottom = 400.0
+grow_horizontal = 2
+text = "Widgets"
+
+[node name="LevelName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -74.5
+offset_top = 111.0
+offset_right = 74.5
+offset_bottom = 181.0
+grow_horizontal = 2
+text = "..."
+horizontal_alignment = 1
+
+[node name="LevelInfoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -217.0
+offset_top = -285.0
+offset_right = -42.0
+offset_bottom = 293.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="LevelInfoContainer" type="VBoxContainer" parent="LevelInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ScoreLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer"]
+layout_mode = 2
+text = "<score>"
+
+[node name="CompleteLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="CompleteLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer"]
+layout_mode = 2
+text = "<complete>"
+
+[node name="DescriptionLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer"]
+layout_mode = 2
+text = "<Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet ac leo a tincidunt. Pellentesque facilisis gravida orci, sed imperdiet ligula vestibulum sed. Duis venenatis libero eget est maximus, non varius velit gravida. Aenean non varius urna. Phasellus vestibulum dui et dui pharetra elementum sed at orci. Cras euismod elementum porttitor. Nulla vitae ipsum nibh. Aliquam bibendum lorem in nunc dapibus semper. Pellentesque laoreet mauris quis lectus iaculis sollicitudin. Donec tincidunt purus a elit dapibus, a blandit lorem laoreet. Duis nisl ante, lobortis vel arcu a, lacinia auctor metus. Donec pulvinar leo non ante volutpat, nec eleifend erat cursus.>"
+
+[node name="Options" parent="." instance=ExtResource("3_7sua4")]
+visible = false
+layout_mode = 1

@@ -33,7 +33,7 @@ offset_top = 69.0
 offset_right = 20.5
 offset_bottom = 138.0
 grow_horizontal = 2
-text = "..."
+text = "<Game title>"
 label_settings = SubResource("LabelSettings_kbful")
 horizontal_alignment = 1
 
@@ -77,20 +77,31 @@ alignment = 1
 
 [node name="PlayButton" type="Button" parent="ButtonContainer"]
 layout_mode = 2
-text = "Jugar"
+text = "Play"
 
 [node name="OptionsButton" type="Button" parent="ButtonContainer"]
 layout_mode = 2
-text = "Opciones"
+text = "Options"
 
 [node name="ExitButton" type="Button" parent="ButtonContainer"]
 layout_mode = 2
-text = "Salir"
+text = "Exit"
+
+[node name="CreditsButton" type="Button" parent="."]
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -122.0
+offset_top = -58.0
+offset_right = -43.0
+offset_bottom = -27.0
+grow_horizontal = 0
+grow_vertical = 0
+text = "Credits"
 
 [node name="Options" parent="." instance=ExtResource("4_u7bnj")]
 visible = false
 layout_mode = 1
-
-[node name="MusicPlayer" type="AudioStreamPlayer" parent="."]
-autoplay = true
-bus = &"Music"

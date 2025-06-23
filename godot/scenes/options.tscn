@@ -80,9 +80,13 @@ layout_mode = 2
 text = "Return"
 
 [node name="OptionsExitButton" type="Button" parent="OptionsPanel/OptionsBackground/OptionsButtonContainer"]
+visible = false
 layout_mode = 2
 text = "Exit Level"
 
 [node name="ConfirmExitDialog" type="ConfirmationDialog" parent="."]
+title = "Are you sure?"
+size = Vector2i(200, 80)
+ok_button_text = "Exit to menu"
 
 [connection signal="confirmed" from="ConfirmExitDialog" to="." method="_on_confirm_exit_dialog_confirmed"]

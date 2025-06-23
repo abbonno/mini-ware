@@ -17,9 +17,7 @@ signal minigame_result(win: bool)
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
-var rng = RandomNumberGenerator.new()
-
-const MAX_LIVES = 1
+const MAX_LIVES = 4
 const MAX_SCORE = 2
 const SPEED_UP_SCORE = 2
 const MIN_MINIGAME_DURATION = 2.0
@@ -199,9 +197,18 @@ func main_iteration(state : State):
 			if win:
 				video_player.stream = video_win_end
 				# Guardar que el juego ha sido completado y la calidad (si ha perdido vidas 0: S, 1: A, 2: B, 3: C)
+				var quality = "C"
+				match lives:
+					1: quality = "C"
+					2: quality = "B"
+					3: quality = "A"
+					4: quality = "S"
+				update_level_info(Globals.DATA_FILE, level_index, "score", quality)
 			else:
 				video_player.stream = video_lose_end
 				# Guardar los datos de la puntuación en caso de que el nivel no estuviera completado antes
+				if endless_mode: # <leer "endless_score": 4>:
+					update_level_info(Globals.DATA_FILE, level_index, "endless_score", score)
 			video_player.play()
 			# await video_player.finished
 			await get_tree().create_timer(1, false).timeout
@@ -210,6 +217,48 @@ func main_iteration(state : State):
 			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
 			transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
+
+func update_level_info(data_path: String, level_key: String, field: String, mode_score):
+	var score_rank = { "S": 4, "A": 3, "B": 2, "C": 1 }
+
+	# Cargar archivo
+	var file: FileAccess
+	var json_data = {}
+
+	if FileAccess.file_exists(data_path):
+		file = FileAccess.open(data_path, FileAccess.READ)
+		var content = file.get_as_text().strip_edges()
+		file.close()
+
+		if content != "":
+			var parsed = JSON.parse_string(content)
+			if typeof(parsed) == TYPE_DICTIONARY:
+				json_data = parsed
+	else:
+		print("Creando nuevo archivo de datos...")
+
+	# Asegurar que el nivel existe en el diccionario
+	if not json_data.has(level_key):
+		json_data[level_key] = {}
+
+	# Obtener el diccionario del nivel
+	var level_data = json_data[level_key]
+
+	# Actualizar campos según la lógica de puntuación
+	if field == "score":
+		var current_score = str(level_data.get("score", "C"))
+		if score_rank.has(current_score) and score_rank.has(mode_score):
+			if score_rank[mode_score] > score_rank[current_score]:
+				level_data["score"] = mode_score
+				level_data["complete"] = true
+	elif field == "endless_score":
+		level_data["endless_score"] = mode_score
+
+	# Guardar el archivo actualizado
+	file = FileAccess.open(data_path, FileAccess.WRITE)
+	file.store_string(JSON.stringify(json_data, "\t"))
+	file.close()
+
 
 func _run_timer_feedback():
 	var animation_activa = false

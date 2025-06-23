@@ -64,7 +64,7 @@ offset_left = 39.0
 offset_top = 26.0
 offset_right = 119.0
 offset_bottom = 57.0
-text = "Opciones"
+text = "Options"
 
 [node name="PlayButton" type="Button" parent="ButtonControl"]
 layout_mode = 1
@@ -108,7 +108,7 @@ offset_right = 302.0
 offset_bottom = 76.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Sig. nivel"
+text = "Next"
 
 [node name="PrevLevelButton" type="Button" parent="ButtonControl"]
 layout_mode = 1
@@ -123,7 +123,7 @@ offset_right = -215.0
 offset_bottom = 63.0
 grow_horizontal = 2
 grow_vertical = 2
-text = "Ant. nivel"
+text = "Previous"
 
 [node name="EndlessModeButton" type="CheckButton" parent="ButtonControl"]
 layout_mode = 1
@@ -132,9 +132,9 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = 212.0
+offset_left = 207.0
 offset_top = 189.0
-offset_right = 334.0
+offset_right = 329.0
 offset_bottom = 257.0
 grow_horizontal = 2
 grow_vertical = 2
@@ -162,7 +162,7 @@ offset_top = 111.0
 offset_right = 74.5
 offset_bottom = 181.0
 grow_horizontal = 2
-text = "..."
+text = "<Level Title>"
 horizontal_alignment = 1
 
 [node name="LevelInfoPanel" type="Panel" parent="."]
@@ -172,7 +172,7 @@ anchor_left = 1.0
 anchor_top = 0.5
 anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -217.0
+offset_left = -225.0
 offset_top = -285.0
 offset_right = -42.0
 offset_bottom = 293.0
@@ -187,17 +187,6 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ScoreLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
-layout_mode = 2
-theme_override_constants/margin_left = 5
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="ScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer"]
-layout_mode = 2
-text = "<score>"
-
 [node name="CompleteLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
 layout_mode = 2
 theme_override_constants/margin_left = 5
@@ -208,6 +197,37 @@ theme_override_constants/margin_bottom = 5
 [node name="CompleteLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer"]
 layout_mode = 2
 text = "<complete>"
+horizontal_alignment = 1
+
+[node name="ScoreLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScoresContainer" type="VBoxContainer" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer"]
+layout_mode = 2
+
+[node name="ScoreTitleLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "Score:"
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "<score>"
+horizontal_alignment = 1
+
+[node name="EndlessScoreTitleLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "Endless mode score:"
+horizontal_alignment = 1
+
+[node name="EndlessScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "<endless_mode_score>"
+horizontal_alignment = 1
 
 [node name="DescriptionLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
 layout_mode = 2

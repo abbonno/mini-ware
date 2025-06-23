@@ -6,9 +6,11 @@ const SCENE_TRANSITION_SCENE = "res://scenes/sceneTransition.tscn"
 const LEVEL_MANAGER_SCENE = "res://scenes/levelManager.tscn"
 const TITLE_SCENE = "res://scenes/title.tscn"
 const MAIN_MENU_SCENE = "res://scenes/mainMenu.tscn"
+const CREDITS_SCENE = "res://scenes/credits.tscn"
 
 # Folders and constant files (for developers)
-const CONFIG_FILE = "res://config/settings.cfg"
+const CONFIG_FILE = "res://data/settings.cfg"
+const DATA_FILE = "res://data/data.json"
 const IMG_PATH = "res://Public/Img/"
 const MUSIC_PATH = "res://Public/Music/"
 const LEVELS_PATH = "res://Levels/"
@@ -20,6 +22,10 @@ const MINIGAMES_DIR = "Minigames/"
 const TITLE_BACKGROUND = "titleBg"
 const TITLE_LOGO = "logo"
 const TITLE_THEME = "titleTheme"
+
+	# Credits
+const CREDITS_PATH = "res://Public/credits.txt"
+const CREDITS_THEME = "creditsTheme"
 
 	# Main menu
 const MAIN_MENU_BACKGROUND = "mainMenuBg"
@@ -43,3 +49,6 @@ const MINIGAME_INFO = "info"
 const WIN_SFX = "winSFX"
 const LOSE_SFX = "loseSFX"
 const LEVEL_THEME = "levelTheme"
+
+# Secret Key for hash encoding
+const SECRET_KEY = "n56?_58G8|+."

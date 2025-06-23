@@ -1,13 +1,15 @@
 extends Control
 
 @onready var assetRecognition = AssetRecognition.new()
+@onready var config = ConfigFile.new()
 
 @onready var background = $Background
 @onready var level_picture = $LevelPicturePanel/LevelPicture
 @onready var button_control = $ButtonControl
 @onready var play_button = $ButtonControl/PlayButton
 @onready var level_name = $LevelName
-@onready var score = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoreLabel
+@onready var score = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer/ScoreLabel
+@onready var endless_score = $LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer/EndlessScoreLabel
 @onready var complete = $LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer/CompleteLabel
 @onready var description = $LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer/DescriptionLabel
 @onready var options = $Options
@@ -16,9 +18,10 @@ extends Control
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 var levels_list = []
-var current_index = 0 # en el guardado de la información del juego almacenar el último nivel en el que se estuvo para comenzar desde ahí la próxima vez que se abra
+var current_index
 
 func _ready():
+	
 	# Cargar los niveles (array levels)
 	assetRecognition.load_dir_names_from_directory(Globals.LEVELS_PATH, levels_list)
 	
@@ -37,16 +40,31 @@ func _ready():
 	for button in button_control.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
 	
+	# Carga el último nivel jugado
+	if config.load(Globals.CONFIG_FILE) == OK:
+		current_index = config.get_value("level", "current_level", 0)
+	
 	# Carga los elementos que dependen de "current_index"
-	update_level_display()
+	update_level_display(current_index)
 
-func update_level_display():
-	var current = Globals.LEVELS_PATH + "/" + levels_list[current_index] + "/"
+func update_level_display(index : int):
+	var current = Globals.LEVELS_PATH + levels_list[index] + "/"
+	# Level data
 	assetRecognition.load_visual_resource(current, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
-	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, level_name, "level_name")
-	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, score, "score")
-	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, complete, "complete")
-	assetRecognition.load_json_resource(current, Globals.MAIN_MENU_LEVEL_INFO, description, "description")
+	level_name.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "level_name")
+	description.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "description")
+	# Storage data
+	print(Globals.DATA_FILE)
+	print(levels_list[index] + "/score")
+	print(assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---"))
+	score.text = assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")
+	endless_score.text = str(assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/endless_score", 0))
+	if assetRecognition.get_json_element(Globals.DATA_FILE, levels_list[index] + "/complete", false):
+		complete.text = "COMPLETE"
+		complete.set("theme_override_colors/font_color", Color.GREEN)
+	else:
+		complete.text = "---"
+		complete.set("theme_override_colors/font_color", Color.RED)
 
 func _on_button_pressed(button_name):
 	match button_name:
@@ -69,7 +87,11 @@ func _on_button_pressed(button_name):
 			transition.change_scene(load(Globals.TITLE_SCENE).instantiate())
 		"NextLevelButton":
 			current_index = (current_index + 1) % levels_list.size()
-			update_level_display()
+			config.set_value("level", "current_level", current_index)
+			config.save(Globals.CONFIG_FILE)
+			update_level_display(current_index)
 		"PrevLevelButton":
 			current_index = (current_index - 1) % levels_list.size()
-			update_level_display()
+			config.set_value("level", "current_level", current_index)
+			config.save(Globals.CONFIG_FILE)
+			update_level_display(current_index)

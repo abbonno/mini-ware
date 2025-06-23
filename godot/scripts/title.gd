@@ -7,6 +7,7 @@ extends Control
 @onready var logoPanel = $LogoPanel
 @onready var music_player = $MusicPlayer
 @onready var button_container = $ButtonContainer
+@onready var credits_button = $CreditsButton
 @onready var options = $Options
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
@@ -37,15 +38,21 @@ func _ready():
 	# Carga botones
 	for button in button_container.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
+	credits_button.connect("pressed", Callable(self, "_on_button_pressed").bind(credits_button.name))
 
 func _on_button_pressed(button_name):
 	match button_name:
 		"PlayButton":
 			music_manager.stop_music()
-			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+			var transition = load(Globals.SCENE_TRANSITION_SCENE).instantiate()
 			get_tree().root.add_child(transition)
 			transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
 		"OptionsButton":
 			options.visible = true
 		"ExitButton":
 			get_tree().quit()
+		"CreditsButton":
+			music_manager.stop_music()
+			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+			get_tree().root.add_child(transition)
+			transition.change_scene(preload(Globals.CREDITS_SCENE).instantiate())

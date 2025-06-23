@@ -1,5 +1,7 @@
 class_name AssetRecognition
 
+# General
+## Obtains the file extension, used to detect its type
 func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
 	if dir == null:
@@ -16,89 +18,7 @@ func get_extension(assetsFolder: String, fileName: String):
 		if match:
 			return match.get_string(1).to_lower() # Devuelve la extensión del archivo
 
-func load_visual_resource(assetsFolder: String, fileName: String, container, expand = TextureRect.EXPAND_FIT_WIDTH, stretch = TextureRect.STRETCH_SCALE, anchors = Control.PRESET_FULL_RECT):
-	var ext = get_extension(assetsFolder, fileName)
-	var path = assetsFolder + fileName + "." + ext
-	match ext:
-		"png", "jpg", "jpeg", "webp", "svg": # Carga de una imagen
-			var sprite_file = load(path)
-			if sprite_file != null:
-				var sprite = TextureRect.new()
-				sprite.texture = sprite_file
-				sprite.expand_mode = expand
-				sprite.stretch_mode = stretch
-				sprite.set_anchors_preset(anchors)
-				container.add_child(sprite)
-			else:
-				print("ERROR: Image could not be loaded ", path)
-				
-		"ogv": # Carga de un vídeo
-			var video_file = load(path)
-			if video_file != null:
-				var video = VideoStreamPlayer.new()
-				video.stream = video_file
-				video.set_anchors_preset(Control.PRESET_FULL_RECT)
-				video.autoplay = true
-				video.expand = true
-				video.loop = true
-				container.add_child(video)
-			else:
-				print("ERROR: Video could not be loaded ", path)
-				
-		"gdshader": # Carga de un shader
-			print(path)
-			var shader_file = load(path)
-			if shader_file != null and shader_file is Shader:
-				var shader_material = ShaderMaterial.new()
-				shader_material.shader = shader_file
-
-				var shader_node = ColorRect.new()
-				shader_node.material = shader_material
-				shader_node.set_anchors_preset(Control.PRESET_FULL_RECT)
-				shader_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-				shader_node.size_flags_vertical = Control.SIZE_EXPAND_FILL
-
-				container.add_child(shader_node)
-
-				# Esperamos a que el nodo tenga tamaño real para pasar la resolución
-				await shader_node.ready
-				print(container.size)
-				shader_material.set_shader_parameter("resolution", container.size)
-			else:
-				print("ERROR: Shader could not be loaded ", path)
-		_:
-			print("ERROR: Unsuported extension ", ext) #inicio control errores, acordarse de poner más
-
-func load_audio_resource(node: Node, assetsFolder: String, fileName: String, type): # Más adelante tendremos que controlar que sea una canción o un s
-	if not node.get_tree().get_root().has_node("MusicManager"):
-		var audio_file = load(assetsFolder + fileName)
-		var music_manager = preload("res://scenes/musicManager.tscn").instantiate()
-		music_manager.name = "musicManager"
-		node.get_tree().get_root().call_deferred("add_child", music_manager)
-		match type:
-			"music":
-				music_manager.play_music(audio_file)
-			"sfx":
-				music_manager.play_sfx(audio_file)
-			_:
-				print("ERROR: Audio type not recognized " + type)
-
-func get_json_element(JSONpath: String, JSONelement: String):
-	var file = FileAccess.open(JSONpath, FileAccess.READ)
-	var infoData
-	var fileData = JSON.parse_string(file.get_as_text())
-	infoData = fileData[JSONelement]
-	return infoData
-
-func load_json_resource(assetFolder: String, fileName: String, container, JSONelement: String):
-	var path = assetFolder + fileName + ".json"
-	var data = get_json_element(path, JSONelement)
-	if data:
-		container.text = data
-	else:
-		print("ERROR: JSON could not be opened ", path)
-
-# Loads the name of the directories contained in the path folder
+## Loads the name of the directories contained in the path folder into the dir_list list
 func load_dir_names_from_directory(path: String, dir_list):
 	var dir = DirAccess.open(path)
 	if dir:
@@ -110,8 +30,9 @@ func load_dir_names_from_directory(path: String, dir_list):
 			folder_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: folder could not be found ", path)
+		print("ERROR: dir folder could not be found ", path)
 
+## Loads the name of the files contained in the path folder into the file_list list
 func load_file_names_from_directory(path: String, file_list):
 	var dir = DirAccess.open(path)
 	if dir:
@@ -127,4 +48,92 @@ func load_file_names_from_directory(path: String, file_list):
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: folder could not be found ", path)
+		print("ERROR: files folder could not be found ", path)
+
+# Images
+## Detects visual resource type between image (png, jpg, jpeg, webp, svg), video (ogv) and shader (gdshader)
+## named by the fileName from the assetsFolder and loads them into the specified container. Can personalize
+## other container's atributes (expand, stretch,  anchors).
+func load_visual_resource(assetsFolder: String, fileName: String, container, expand = TextureRect.EXPAND_FIT_WIDTH, stretch = TextureRect.STRETCH_SCALE, anchors = Control.PRESET_FULL_RECT):
+	var ext = get_extension(assetsFolder, fileName)
+	var path = assetsFolder + fileName + "." + ext
+	match ext:
+		"png", "jpg", "jpeg", "webp", "svg":
+			var sprite_file = load(path)
+			if sprite_file != null:
+				var sprite = TextureRect.new()
+				sprite.texture = sprite_file
+				sprite.expand_mode = expand
+				sprite.stretch_mode = stretch
+				sprite.set_anchors_preset(anchors)
+				container.add_child(sprite)
+			else:
+				print("ERROR: Image could not be loaded ", path)
+				
+		"ogv":
+			var video_file = load(path)
+			if video_file != null:
+				var video = VideoStreamPlayer.new()
+				video.stream = video_file
+				video.set_anchors_preset(Control.PRESET_FULL_RECT)
+				video.autoplay = true
+				video.expand = true
+				video.loop = true
+				container.add_child(video)
+			else:
+				print("ERROR: Video could not be loaded ", path)
+				
+		"gdshader":
+			var shader_file = load(path)
+			if shader_file != null and shader_file is Shader:
+				var shader_material = ShaderMaterial.new()
+				shader_material.shader = shader_file
+
+				var shader_node = ColorRect.new()
+				shader_node.material = shader_material
+				shader_node.set_anchors_preset(Control.PRESET_FULL_RECT)
+				shader_node.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+				shader_node.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+				container.add_child(shader_node)
+
+				# Esperamos a que el nodo tenga tamaño real para pasar la resolución
+				await shader_node.ready
+				shader_material.set_shader_parameter("resolution", container.size)
+			else:
+				print("ERROR: Shader could not be loaded ", path)
+		_:
+			print("ERROR: Unsuported extension ", ext) #inicio control errores, acordarse de poner más
+
+### Poner separadas las funciones de arriba
+
+# Data (podríamos hacer como con las imágenes algo general para json y cfg)
+## Returns JSONelement found in JSON file given by JSONpath
+func get_json_element(json_path: String, key_path: String, default_value = null):
+	if not FileAccess.file_exists(json_path):
+		return default_value
+
+	var file = FileAccess.open(json_path, FileAccess.READ)
+	if not file:
+		return default_value
+
+	var content := file.get_as_text().strip_edges()
+	file.close()
+
+	if content == "":
+		return default_value
+
+	var json_data = JSON.parse_string(content)
+	if typeof(json_data) != TYPE_DICTIONARY:
+		return default_value
+
+	# Soporte para claves tipo "Level1/score" o "Settings/Video/Resolution"
+	var keys = key_path.split("/")
+	var current = json_data
+
+	for key in keys:
+		if typeof(current) != TYPE_DICTIONARY or not current.has(key):
+			return default_value
+		current = current[key]
+
+	return current
