@@ -3,6 +3,8 @@ extends Node
 signal minigame_result(win: bool)
 
 @onready var assetRecognition = AssetRecognition.new()
+@onready var saveEncoder = SaveEncoder.new()
+@onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 @onready var video_player = $UIContainer/VideoStreamPlayer
 @onready var popup_container = $UIContainer/PopupContainer
@@ -15,79 +17,66 @@ signal minigame_result(win: bool)
 @onready var options = $Options
 @onready var post_process_material = $shaderEffects.material
 
-@onready var music_manager = get_tree().get_root().get_node("MusicManager")
-@onready var saveEncoder = SaveEncoder.new()
-
-const MAX_LIVES = 4
+const MAX_LIVES = 2 # MAX 9 (else it overflows)
 const MAX_SCORE = 2
 const SPEED_UP_SCORE = 2
 const MIN_MINIGAME_DURATION = 2.0
-var lives = MAX_LIVES
+var lives = MAX_LIVES if MAX_LIVES < 9 else 9
 var score = 0
-var minigame_duration = 4.0 # Habrá que quitarlo una vez se coja la info del minigame
+var win : bool = true
 
 var endless_mode : bool = false
-var level_index = "Level1" # Cambiarlo una vez se capture la info, aunque más vale dejar cosas por defecto
+var level_index : String = "Level1"
+var current_level_path = Globals.LEVELS_PATH + level_index + "/"
+
 var minigames_list = []
+var minigames_path = current_level_path + Globals.MINIGAMES_DIR
 var prev_minigame_index = -1
 var minigame_index = -1
+var minigame
 
-var minigame # guarda la escena del minigame para gestionarla
-
-var current_level_path = Globals.LEVELS_PATH + level_index + "/"
-var minigames_path = current_level_path + Globals.MINIGAMES_DIR
 var video_intro
 var video_control
 var video_lose
 var video_win_end
 var video_lose_end
-var popup # el popup de instrucciones lo gestiona el usuario con el nombre dado en el info.json
-var minigame_info_path
 var levelTheme
-
-
-var win : bool = true # Al empezar debe estar en true para que se despliegue la escena de conotrol y no la de lose
+var popup
+var minigame_info_path
 
 enum State { CONTROL, GAME, END }
 
 func _ready():
+	video_intro = load(current_level_path + Globals.INTRO_VID + Globals.VIDEO_EXT)
+	video_control = load(current_level_path + Globals.CONTROL_VID + Globals.VIDEO_EXT)
+	video_lose = load(current_level_path + Globals.LOSE_VID + Globals.VIDEO_EXT)
+	video_win_end = load(current_level_path + Globals.WIN_END_VID + Globals.VIDEO_EXT)
+	video_lose_end = load(current_level_path + Globals.LOSE_END_VID + Globals.VIDEO_EXT)
+	levelTheme = load(current_level_path + Globals.LEVEL_THEME + "." + assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME))
 	
-	# Cargar contenido
-	video_intro = load(current_level_path + Globals.INTRO_VID + ".ogv")
-	video_control = load(current_level_path + Globals.CONTROL_VID + ".ogv")
-	video_lose = load(current_level_path + Globals.LOSE_VID + ".ogv")
-	video_win_end = load(current_level_path + Globals.WIN_END_VID + ".ogv")
-	video_lose_end = load(current_level_path + Globals.LOSE_END_VID + ".ogv")
-	# POPUP file must be the same as defined on the info.json
-	
-	levelTheme = load(current_level_path + Globals.LEVEL_THEME + ".ogg")
-	
-	# Options control
 	options.show_exit_button(true)
 	options.close_options.connect(_on_close_options)
 	options.open_options.connect(_on_open_options)
 	options.connect("exit_to_main_menu", Callable(self, "_on_exit_requested"))
 	
-	# Cargar música
 	if !music_manager:
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
 	
-	# Cargar popup
 	popup_container.visible = false
-	
-	# Cargar vidas+puntuacion
 	health_container.visible = false
-	for health in health_container.get_children():
-		assetRecognition.load_visual_resource(current_level_path, Globals.HEALTH_SPRITE, health.get_child(0))
+	for i in MAX_LIVES:
+		if i < 9: # Control that the lives don't overflow
+			var healt_margin_container = MarginContainer.new()
+			healt_margin_container.custom_minimum_size = Vector2(125, 125)
+			health_container.add_child(healt_margin_container)
+			assetRecognition.load_visual_resource(current_level_path, "speed_up", healt_margin_container)
 	score_label.visible = false
 	score_label.text = str(score)
 	
-	# Obtenemos la carpeta del nivel
 	current_level_path = Globals.LEVELS_PATH + level_index + "/"
 	minigames_path = current_level_path + Globals.MINIGAMES_DIR
-	# Cargar lista de minijuegos en el nivel
 	assetRecognition.load_dir_names_from_directory(minigames_path, minigames_list)
 	
 	# Cargar cinemática intro
@@ -189,7 +178,7 @@ func main_iteration(state : State):
 					return
 			else:
 				lives = lives-1
-				health_container.get_child(lives).get_child(0).visible = false
+				health_container.get_child(lives).free()
 				if lives <= 0:
 					main_iteration(State.END)
 					return

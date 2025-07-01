@@ -1,8 +1,7 @@
 class_name AssetRecognition
 
-
-
 # General
+
 ## Obtains the file extension, used to detect its type
 func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
@@ -53,6 +52,7 @@ func load_file_names_from_directory(path: String, file_list):
 		print("ERROR: files folder could not be found ", path)
 
 # Images
+
 ## Detects visual resource type between image (png, jpg, jpeg, webp, svg), video (ogv) and shader (gdshader)
 ## named by the fileName from the assetsFolder and loads them into the specified container. Can personalize
 ## other container's atributes (expand, stretch,  anchors).
@@ -110,6 +110,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 ### Poner separadas las funciones de arriba
 
 # Data (podríamos hacer como con las imágenes algo general para json y cfg)
+
 ## Returns JSONelement found in JSON file given by JSONpath
 func get_json_element(json_path: String, key_path: String, default_value = null):
 	if not FileAccess.file_exists(json_path):

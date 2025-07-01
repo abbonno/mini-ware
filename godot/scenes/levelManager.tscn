@@ -1,7 +1,6 @@
-[gd_scene load_steps=6 format=3 uid="uid://xcy1pul163hq"]
+[gd_scene load_steps=5 format=3 uid="uid://xcy1pul163hq"]
 
 [ext_resource type="Script" path="res://scripts/level_manager.gd" id="1_l51yg"]
-[ext_resource type="Texture2D" uid="uid://b2sfwuav1sbh4" path="res://icon.svg" id="2_djuho"]
 [ext_resource type="Shader" path="res://others/psichedelic.gdshader" id="3_74g0l"]
 [ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_uur0k"]
 
@@ -49,42 +48,6 @@ offset_bottom = -75.0
 grow_horizontal = 2
 grow_vertical = 0
 alignment = 1
-
-[node name="HealthMarginContainer1" type="MarginContainer" parent="UIContainer/HealthContainer"]
-custom_minimum_size = Vector2(125, 125)
-layout_mode = 2
-
-[node name="Health1" type="TextureRect" parent="UIContainer/HealthContainer/HealthMarginContainer1"]
-layout_mode = 2
-texture = ExtResource("2_djuho")
-expand_mode = 2
-
-[node name="HealthMarginContainer2" type="MarginContainer" parent="UIContainer/HealthContainer"]
-custom_minimum_size = Vector2(125, 125)
-layout_mode = 2
-
-[node name="Health2" type="TextureRect" parent="UIContainer/HealthContainer/HealthMarginContainer2"]
-layout_mode = 2
-texture = ExtResource("2_djuho")
-expand_mode = 2
-
-[node name="HealthMarginContainer3" type="MarginContainer" parent="UIContainer/HealthContainer"]
-custom_minimum_size = Vector2(125, 125)
-layout_mode = 2
-
-[node name="Health3" type="TextureRect" parent="UIContainer/HealthContainer/HealthMarginContainer3"]
-layout_mode = 2
-texture = ExtResource("2_djuho")
-expand_mode = 2
-
-[node name="HealthMarginContainer4" type="MarginContainer" parent="UIContainer/HealthContainer"]
-custom_minimum_size = Vector2(125, 125)
-layout_mode = 2
-
-[node name="Health4" type="TextureRect" parent="UIContainer/HealthContainer/HealthMarginContainer4"]
-layout_mode = 2
-texture = ExtResource("2_djuho")
-expand_mode = 2
 
 [node name="ScoreLabel" type="Label" parent="UIContainer"]
 layout_mode = 1

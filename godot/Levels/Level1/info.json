@@ -1,8 +1,4 @@
 {
-	"clock_animation": "sprite",
-	"complete": true,
 	"description": "Este es el nivel 1",
-	"endless_score": 0,
-	"level_name": "Nivel 1",
-	"score": "A"
+	"level_name": "Nivel 1"
 }

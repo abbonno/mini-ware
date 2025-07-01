@@ -1,5 +1,8 @@
 extends Node
 
+# Extensions
+const VIDEO_EXT = ".ogv"
+
 # Scenes
 const MUSIC_MANAGER_SCENE = "res://scenes/musicManager.tscn"
 const SCENE_TRANSITION_SCENE = "res://scenes/sceneTransition.tscn"
@@ -32,7 +35,7 @@ const MAIN_MENU_BACKGROUND = "mainMenuBg"
 const MAIN_MENU_LEVEL_PICTURE = "picture"
 const MAIN_MENU_LEVEL_INFO = "info"
 const MAIN_MENU_THEME = "mainMenuTheme"
-const PLAY_ICON = "icon.svg"
+const PLAY_ICON = "icon"
 
 	# Level manager
 const INTRO_VID = "intro"
