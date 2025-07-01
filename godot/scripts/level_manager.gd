@@ -252,25 +252,20 @@ func _run_timer_feedback():
 	while minigame_timer.time_left > 0:
 		time_label.text = str(minigame_timer.time_left)
 		if minigame_timer.time_left <= MIN_MINIGAME_DURATION and !animation_activa:
-			_run_clock_animation("sprite")
+			_run_clock_animation()
 			animation_activa = true
 		
 		await get_tree().create_timer(0.1, false).timeout
 	time_label.visible = false
 
-func _run_clock_animation(type: String):
+func _run_clock_animation():
 	time_sprite.visible = true
-	if type == "sprite":
-		var clocks_list = []
-		assetRecognition.load_file_names_from_directory(current_level_path + "Clock", clocks_list)
-		var tiempo_frame : float = minigame_timer.time_left/clocks_list.size() - 0.05
-		for clock in clocks_list:
-			assetRecognition.load_visual_resource(current_level_path + "Clock/", clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
-			await get_tree().create_timer(tiempo_frame, false).timeout
-			time_sprite.get_child(0).queue_free()
-	if type == "shader":
-		assetRecognition.load_visual_resource(current_level_path + "Clock/", "reloj", time_sprite)
-		await get_tree().create_timer(2, false).timeout
+	var clocks_list = []
+	assetRecognition.load_file_names_from_directory(current_level_path + "Clock", clocks_list)
+	var tiempo_frame : float = minigame_timer.time_left/clocks_list.size() - 0.05
+	for clock in clocks_list:
+		assetRecognition.load_visual_resource(current_level_path + "Clock/", clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
+		await get_tree().create_timer(tiempo_frame, false).timeout
 		time_sprite.get_child(0).queue_free()
 	
 	time_sprite.visible = false
