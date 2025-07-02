@@ -17,6 +17,11 @@ signal minigame_result(win: bool)
 @onready var options = $Options
 @onready var post_process_material = $shaderEffects.material
 
+# Times
+const CONTROL_SCENE_DURATION = 1
+const SPEEDUP_POPUP_DURATION = 1
+const INSTRUCTIONS_POPUP_DURATION = 1
+
 const MAX_LIVES = 2 # MAX 9 (else it overflows)
 const MAX_SCORE = 2
 const SPEED_UP_SCORE = 2
@@ -81,12 +86,8 @@ func _ready():
 	
 	# Cargar cinemática intro
 	#introduction_scene()
-	music_manager.play_music(levelTheme)
-	main_iteration(State.CONTROL)
-
-func _process(delta):
-	var t = Time.get_ticks_msec() / 1000.0
-	post_process_material.set_shader_parameter("time", t)
+	music_manager.play_music(levelTheme) # Quitar
+	control_scene()
 
 func introduction_scene():
 	video_player.stream = video_intro
@@ -95,11 +96,107 @@ func introduction_scene():
 	video_player.stop()
 	# Cargar música general del nivel
 	music_manager.play_music(levelTheme)
-	main_iteration(State.CONTROL)
+	control_scene()
+
+func control_scene():
+	# Random minigame
+	minigame_index = choose_next_minigame_index()
+	minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + Globals.JSON_EXT
+	
+	# Background
+	if win:
+		video_player.stream = video_control
+	if !win:
+		video_player.stream = video_lose
+	video_player.play()
+	
+	# Sprites
+	health_container.visible = true
+	score_label.visible = true
+	
+	# Speedup popup
+	if !(score % SPEED_UP_SCORE) and score != 0 and music_manager.music.pitch_scale < 2:
+		assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+		popup_container.visible = true
+		# SONIDO: sonido de subir tempo (seta de mario), esperar a que acabe el sonido para subir el tempo
+		music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 
+		await get_tree().create_timer(SPEEDUP_POPUP_DURATION, false).timeout
+		popup_container.visible = false
+		popup_container.get_child(0).queue_free()
+	
+	# Visualización normal
+	await get_tree().create_timer(CONTROL_SCENE_DURATION, false).timeout
+	
+	# Instructions popup
+	popup = assetRecognition.get_json_element(minigame_info_path, Globals.INSTRUCTION_FIELD) # Obtener el nombre de la instrucción del nivel escogido
+	assetRecognition.load_visual_resource(current_level_path, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+	popup_container.visible = true
+	await get_tree().create_timer(INSTRUCTIONS_POPUP_DURATION, false).timeout
+	popup_container.visible = false
+	popup_container.get_child(0).queue_free()
+	
+	# Change scene
+	video_player.stop()
+	health_container.visible = false
+	score_label.visible = false
+	game_scene()
+
+func game_scene():
+	win = assetRecognition.get_json_element(minigame_info_path, Globals.SURVIVAL_FIELD) == "true"
+	minigame = load(minigames_path + minigames_list[minigame_index] + "/" + Globals.GAME_SCENE).instantiate()
+	minigame.win.connect(Callable(self, "_on_minigame_result"))
+	minigame_container.add_child(minigame)
+	
+	# Asignar tiempo del minijuego al contador (controlar por si algún loco mete que el tiempo sea inferior a 2 segundos)
+	var min_time = assetRecognition.get_json_element(minigame_info_path, Globals.DURATION_FIELD)
+	if min_time >= MIN_MINIGAME_DURATION:
+		minigame_timer.wait_time = min_time
+	elif min_time < MIN_MINIGAME_DURATION:
+		minigame_timer.wait_time = MIN_MINIGAME_DURATION
+	minigame_timer.start()
+	_run_timer_feedback() # Revisar
+	# SONIDO: El levelmanager es encargado de lanzar sonido de lose/win generalizado: puede surgir antes o después de que acabe el temporizador (ver la manera de que se lance una señal desde el minijuego)
+	await minigame_timer.timeout
+	for child in minigame_container.get_children():
+		child.queue_free()
+
+	if win:
+		score = score+1
+		score_label.text = str(score)
+		if score >= MAX_SCORE and !endless_mode:
+			end_scene()
+			return
+	else:
+		lives = lives-1
+		health_container.get_child(lives).free()
+		if lives <= 0:
+			end_scene()
+			return
+	control_scene()
+
+func end_scene(): # Se poodría poner win como argumento y que no esté como variable global?
+	if win:
+		video_player.stream = video_win_end
+		update_level_info(Globals.DATA_FILE, level_index, "winScore", calculate_rank(MAX_LIVES, lives))
+	else:
+		video_player.stream = video_lose_end
+		# Guardar los datos de la puntuación en caso de que el nivel no estuviera completado antes
+		if endless_mode: # <leer "endless_score": 4>:
+			update_level_info(Globals.DATA_FILE, level_index, "endless_score", score)
+		else:
+			update_level_info(Globals.DATA_FILE, level_index, "loseScore", score)
+	video_player.play()
+	# await video_player.finished
+	await get_tree().create_timer(1, false).timeout
+	music_manager.music.pitch_scale = 1
+	music_manager.stop_music()
+	var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
+	get_tree().root.add_child(transition)
+	transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
 
 func choose_next_minigame_index() -> int:
 	if minigames_list.size() <= 1:
-		return 0  # No hay forma de evitar la repetición
+		return 0  # Only one game
 
 	var new_index := randi() % minigames_list.size()
 	while new_index == prev_minigame_index:
@@ -108,132 +205,39 @@ func choose_next_minigame_index() -> int:
 	prev_minigame_index = new_index
 	return new_index
 
-func main_iteration(state : State):
-	match state:
-		State.CONTROL:
-			#if !music_manager.music.playing:
-				#music_manager.play_music(load(Globals.MUSIC_PATH + Globals.LEVEL_THEME + ".ogg"))
-			# Lógica de selección de nivel aleatorio
-			minigame_index = choose_next_minigame_index()
-			minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + ".json"
-			
-			# Vídeo fondo escena control (win/lose)
-			if win:
-				video_player.stream = video_control
-			if !win:
-				video_player.stream = video_lose
-			video_player.play()
-			
-			# Sprites escena de control
-			health_container.visible = true
-			score_label.visible = true
-			
-			# Popup y lógica del speed up
-			if !(score % SPEED_UP_SCORE) and score != 0 and music_manager.music.pitch_scale < 2:
-				assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
-				popup_container.visible = true
-				music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 # podríamos poner un sonido (seta de mario creciendo) y cuando acabe (en vez de la espera) aumentamos el pitch (también habría que pausar la música)
-				await get_tree().create_timer(1, false).timeout
-				popup_container.visible = false
-				popup_container.get_child(0).queue_free()
-			
-			# Visualización normal
-			await get_tree().create_timer(1, false).timeout
-			
-			# Popup de instructions
-			popup = assetRecognition.get_json_element(minigame_info_path, "instruction") # Obtener el nombre de la instrucción del nivel escogido
-			assetRecognition.load_visual_resource(current_level_path, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
-			popup_container.visible = true
-			await get_tree().create_timer(1, false).timeout
-			popup_container.visible = false
-			popup_container.get_child(0).queue_free()
-			
-			video_player.stop()
-			health_container.visible = false
-			score_label.visible = false
-			main_iteration(State.GAME)
-		State.GAME:
-			win = assetRecognition.get_json_element(minigame_info_path, "survival") == "true"
-			minigame = load(minigames_path + minigames_list[minigame_index] + "/Game.tscn").instantiate()
-			minigame.win.connect(Callable(self, "_on_minigame_result"))
-			minigame_container.add_child(minigame)
-			
-			# Asignar tiempo del minijuego al contador (controlar por si algún loco mete que el tiempo sea inferior a 2 segundos)
-			var min_time = assetRecognition.get_json_element(minigame_info_path, "duration")
-			if min_time >= MIN_MINIGAME_DURATION:
-				minigame_timer.wait_time = min_time
-			elif min_time < MIN_MINIGAME_DURATION:
-				minigame_timer.wait_time = MIN_MINIGAME_DURATION
-			
-			minigame_timer.start()
-			_run_timer_feedback()
-			await minigame_timer.timeout
-			for child in minigame_container.get_children():
-				child.queue_free()
-			if win:
-				score = score+1
-				score_label.text = str(score)
-				if score >= MAX_SCORE and !endless_mode:
-					main_iteration(State.END)
-					return
-			else:
-				lives = lives-1
-				health_container.get_child(lives).free()
-				if lives <= 0:
-					main_iteration(State.END)
-					return
-			main_iteration(State.CONTROL)
-		State.END:
-			if win:
-				video_player.stream = video_win_end
-				# Guardar que el juego ha sido completado y la calidad (si ha perdido vidas 0: S, 1: A, 2: B, 3: C)
-				var quality = "C"
-				match lives:
-					1: quality = "C"
-					2: quality = "B"
-					3: quality = "A"
-					4: quality = "S"
-				update_level_info(Globals.DATA_FILE, level_index, "score", quality)
-			else:
-				video_player.stream = video_lose_end
-				# Guardar los datos de la puntuación en caso de que el nivel no estuviera completado antes
-				if endless_mode: # <leer "endless_score": 4>:
-					update_level_info(Globals.DATA_FILE, level_index, "endless_score", score)
-			video_player.play()
-			# await video_player.finished
-			await get_tree().create_timer(1, false).timeout
-			music_manager.music.pitch_scale = 1
-			music_manager.stop_music()
-			var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
-			get_tree().root.add_child(transition)
-			transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
-
 func update_level_info(data_path: String, level_key: String, field: String, mode_score):
-	var score_rank = { "S": 4, "A": 3, "B": 2, "C": 1 }
-
-	# Leer datos con verificación de integridad
+	# Verify data integrity
 	var json_data: Dictionary = saveEncoder.load_encoded_json(data_path)
-
-	# Asegurar que el nivel existe
-	if not json_data.has(level_key):
-		json_data[level_key] = {}
-
+	# Avoid nil value
+	if not json_data.has(level_key): json_data[level_key] = {}
 	var level_data = json_data[level_key]
 
-	# Actualizar campos
-	if field == "score":
-		var current_score = str(level_data.get("score", "C"))
-		if score_rank.has(current_score) and score_rank.has(mode_score):
-			if score_rank[mode_score] > score_rank[current_score]:
-				level_data["score"] = mode_score
-				level_data["complete"] = true
-	elif field == "endless_score":
+	# Update
+	if field == "loseScore":
+		if mode_score > level_data.get("score", 0) && !level_data.get("complete", false):
+			level_data["score"] = mode_score
+	if field == "winScore":
+		if level_data.get("complete", false):
+			level_data["score"] = mode_score
+		elif mode_score > level_data.get("score", 0):
+			level_data["score"] = mode_score
+			level_data["complete"] = true
+	if field == "endless_score":
 		level_data["endless_score"] = mode_score
 
 	# Guardar de vuelta con codificación
 	json_data[level_key] = level_data
 	saveEncoder.save_encoded_json(data_path, json_data)
 
+func calculate_rank(max_lives: int, lives_lost: int):
+	var grades = [4, 3, 2, 1]
+	var num_grades = min(grades.size(), max_lives)  # No más rangos que vidas
+	
+	# Calcula el índice de calidad según las vidas perdidas proporcionalmente
+	var step = max_lives / float(num_grades)
+	var index = int(floor(lives_lost / step))
+	
+	return grades[min(index, num_grades - 1)]
 
 func _run_timer_feedback():
 	var animation_activa = false

@@ -76,11 +76,14 @@ func update_level_display(index : int):
 	level_name.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "level_name")
 	description.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "description")
 
-	score.text = assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")
+	score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---"))
 	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/endless_score", 0))
-	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/complete", false):
+	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.COMPLETE_FIELD, false):
 		complete.text = "COMPLETE"
 		complete.set("theme_override_colors/font_color", Color.GREEN)
+		var score_map = {"1": "C", "2": "B", "3": "A", "4": "S"}
+		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")), "DOesnotwork")
+		
 	else:
 		complete.text = "---"
 		complete.set("theme_override_colors/font_color", Color.RED)

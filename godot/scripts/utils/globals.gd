@@ -2,6 +2,7 @@ extends Node
 
 # Extensions
 const VIDEO_EXT = ".ogv"
+const JSON_EXT = ".json"
 
 # Scenes
 const MUSIC_MANAGER_SCENE = "res://scenes/musicManager.tscn"
@@ -46,12 +47,18 @@ const LOSE_END_VID = "loseEndVid"
 
 const HEALTH_SPRITE = "healthSprite"
 const SPEED_UP_POPUP = "speed_up"
-# const INSTRUCTION # The instruction must be defined by the user depending on the instruction field on the minigames info.json
 const MINIGAME_INFO = "info"
+
+const INSTRUCTION_FIELD = "instruction"
+const SURVIVAL_FIELD = "survival"
+const DURATION_FIELD = "duration"
+const COMPLETE_FIELD = "complete"
 
 const WIN_SFX = "winSFX"
 const LOSE_SFX = "loseSFX"
 const LEVEL_THEME = "levelTheme"
+
+const GAME_SCENE = "Game.tscn"
 
 # Secret Key for hash encoding
 const SECRET_KEY = "n56?_58G8|+."

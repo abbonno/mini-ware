@@ -2,11 +2,11 @@ class_name SaveEncoder
 
 func save_encoded_json(path: String, data: Dictionary) -> void:
 	var json_text := JSON.stringify(data)
-	var hash := _generate_hash(json_text)
+	var code_hash := _generate_hash(json_text)
 	
 	var output = {
 		"data": json_text,
-		"hash": hash
+		"hash": code_hash
 	}
 	
 	var file = FileAccess.open(path, FileAccess.WRITE)
