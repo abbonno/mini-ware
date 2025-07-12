@@ -45,8 +45,21 @@ func spawn_level(pattern: Array):
 
 func _on_win():
 	print("¡Victoria!")
+	_set_paused_recursively($".", true)
 	emit_signal("win", true)
 
 func _on_player_fell():
 	print("Jugador cayó")
+	_set_paused_recursively($".", true)
 	emit_signal("win", false)
+
+
+func _set_paused_recursively(node: Node, paused: bool) -> void:
+	node.set_process(not paused)
+	node.set_physics_process(not paused)
+	node.set_process_input(not paused)
+	node.set_process_unhandled_input(not paused)
+	node.set_process_unhandled_key_input(not paused)
+	for child in node.get_children():
+		if child is Node:
+			_set_paused_recursively(child, paused)

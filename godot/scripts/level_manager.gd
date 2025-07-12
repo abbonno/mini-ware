@@ -267,17 +267,6 @@ func _on_minigame_result(win_signal: bool):
 	self.win = win_signal
 	if minigame_timer.time_left > 2:
 		minigame_timer.start(2) # En vez de detener el timer, pone los dos segundos de cronómetro y la señal que desactiva la espera es la del timer (ver cómo mandarle el dato win)
-	_set_paused_recursively(minigame_container.get_child(0), true) 
-
-func _set_paused_recursively(node: Node, paused: bool) -> void:
-	node.set_process(not paused)
-	node.set_physics_process(not paused)
-	node.set_process_input(not paused)
-	node.set_process_unhandled_input(not paused)
-	node.set_process_unhandled_key_input(not paused)
-	for child in node.get_children():
-		if child is Node:
-			_set_paused_recursively(child, paused)
 
 func _on_close_options():
 	get_tree().paused = false

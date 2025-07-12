@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_i6vpc"]
 [ext_resource type="Texture2D" uid="uid://b2sfwuav1sbh4" path="res://icon.svg" id="2_tdmgd"]
-[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_7sua4"]
+[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_xwa1m"]
 
 [node name="MainMenu" type="Control"]
 layout_mode = 3
@@ -126,18 +126,6 @@ grow_horizontal = 2
 grow_vertical = 2
 text = "Endless"
 
-[node name="WidgetsButton" type="Button" parent="ButtonControl"]
-layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -519.0
-offset_top = 269.0
-offset_right = -413.0
-offset_bottom = 400.0
-grow_horizontal = 2
-text = "Widgets"
-
 [node name="LevelName" type="Label" parent="."]
 layout_mode = 1
 anchors_preset = 5
@@ -227,6 +215,6 @@ theme_override_constants/margin_bottom = 5
 layout_mode = 2
 text = "<Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet ac leo a tincidunt. Pellentesque facilisis gravida orci, sed imperdiet ligula vestibulum sed. Duis venenatis libero eget est maximus, non varius velit gravida. Aenean non varius urna. Phasellus vestibulum dui et dui pharetra elementum sed at orci. Cras euismod elementum porttitor. Nulla vitae ipsum nibh. Aliquam bibendum lorem in nunc dapibus semper. Pellentesque laoreet mauris quis lectus iaculis sollicitudin. Donec tincidunt purus a elit dapibus, a blandit lorem laoreet. Duis nisl ante, lobortis vel arcu a, lacinia auctor metus. Donec pulvinar leo non ante volutpat, nec eleifend erat cursus.>"
 
-[node name="Options" parent="." instance=ExtResource("3_7sua4")]
+[node name="Options" parent="." instance=ExtResource("3_xwa1m")]
 visible = false
 layout_mode = 1
