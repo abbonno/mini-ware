@@ -45,19 +45,23 @@ var video_control
 var video_lose
 var video_win_end
 var video_lose_end
-var levelTheme
+var musicDetected = true
+var level_theme
 var popup
 var minigame_info_path
 
-enum State { CONTROL, GAME, END }
-
 func _ready():
 	video_intro = load(current_level_path + Globals.INTRO_VID + Globals.VIDEO_EXT)
-	video_control = load(current_level_path + Globals.CONTROL_VID + Globals.VIDEO_EXT)
+	video_control =  load(current_level_path + Globals.INTRO_VID + Globals.VIDEO_EXT)
 	video_lose = load(current_level_path + Globals.LOSE_VID + Globals.VIDEO_EXT)
 	video_win_end = load(current_level_path + Globals.WIN_END_VID + Globals.VIDEO_EXT)
 	video_lose_end = load(current_level_path + Globals.LOSE_END_VID + Globals.VIDEO_EXT)
-	levelTheme = load(current_level_path + Globals.LEVEL_THEME + "." + assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME))
+	# Detección de la pista del nivel en la escena inicial
+	var level_theme_path = current_level_path + Globals.LEVEL_THEME + "." + assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME)
+	if(FileAccess.file_exists(level_theme_path)):
+		level_theme = load(level_theme_path)
+	else:
+		musicDetected = false
 	
 	options.show_exit_button(true)
 	options.close_options.connect(_on_close_options)
@@ -86,7 +90,9 @@ func _ready():
 	
 	# Cargar cinemática intro
 	#introduction_scene()
-	music_manager.play_music(levelTheme) # Quitar
+	if(musicDetected):
+		music_manager.play_music(level_theme)
+		video_player.volume_db = -80
 	control_scene()
 
 func introduction_scene():
@@ -95,7 +101,10 @@ func introduction_scene():
 	await video_player.finished
 	video_player.stop()
 	# Cargar música general del nivel
-	music_manager.play_music(levelTheme)
+	if(musicDetected):
+		music_manager.play_music(level_theme)
+		video_player.volume_db = -80
+		
 	control_scene()
 
 func control_scene():

@@ -18,6 +18,7 @@ func get_extension(assetsFolder: String, fileName: String):
 		var match = regex.search(file)
 		if match:
 			return match.get_string(1).to_lower() # Devuelve la extensión del archivo
+	return "" # Devuelve string vacío para evitar errores por el uso de Nil (ex: Invalid operands 'String' and 'Nil' in operator '+'.)
 
 ## Loads the name of the directories contained in the path folder into the dir_list list
 func load_dir_names_from_directory(path: String, dir_list):
@@ -60,7 +61,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 	var ext = get_extension(assetsFolder, fileName)
 	var path = assetsFolder + fileName + "." + ext
 	match ext:
-		"png", "jpg", "jpeg", "webp", "svg":
+		"bmp", "dds", "ktx", "exr", "hdr", "jpg", "jpeg", "png", "tga", "svg", "webp" :
 			var sprite_file = load(path)
 			if sprite_file != null:
 				var sprite = TextureRect.new()
