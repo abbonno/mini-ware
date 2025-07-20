@@ -9,29 +9,27 @@ extends Control
 @onready var label = $PanelContainer/ScrollContainer/VBoxContainer/RichTextLabel
 @onready var title_button = $TitleButton
 
-var scroll_speed = 80.0             # píxeles por segundo
-var scroll_acceleration = 200.0     # cuando se pulsa flecha abajo
+var scroll_speed = 80.0
+var scroll_acceleration = 200.0     # when button pressed
 var is_paused = false
 
 func _ready():
-	
-	# Carga música de créditos
 	if !music_manager:
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
-	music_manager.play_music(load(Globals.MUSIC_PATH + Globals.CREDITS_THEME + ".ogg"))
+	music_manager.play_music(load(Globals.CREDITS_PATH + Globals.CREDITS_THEME + "." + assetRecognition.get_extension(Globals.CREDITS_PATH, Globals.CREDITS_THEME)))
 	
 	title_button.connect("pressed", Callable(self, "_on_button_pressed").bind(title_button.name))
 
-	assetRecognition.load_visual_resource(Globals.IMG_PATH, Globals.TITLE_BACKGROUND, background)
+	assetRecognition.load_visual_resource(Globals.CREDITS_PATH, Globals.CREDITS_BACKGROUND, background)
 	
-	load_credits(Globals.CREDITS_PATH)
-	scroll.scroll_vertical = 0  # iniciar desde arriba
+	load_credits(Globals.CREDITS_PATH + Globals.CREDITS)
+	scroll.scroll_vertical = 0
 
 func load_credits(path: String):
 	if not FileAccess.file_exists(path):
-		label.text = "[color=red]Archivo de créditos no encontrado.[/color]"
+		label.text = "[color=red]No credits file found.[/color]"
 		return
 	
 	var file = FileAccess.open(path, FileAccess.READ)
@@ -47,7 +45,7 @@ func load_credits(path: String):
 		elif line != "":
 			label.append_text("[center]" + line + "[/center]\n")
 		else:
-			label.append_text("\n")  # Espaciado
+			label.append_text("\n")
 
 	label.scroll_active = false
 	label.bbcode_enabled = true

@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://xcy1pul163hq"]
 
 [ext_resource type="Script" path="res://scripts/level_manager.gd" id="1_l51yg"]
-[ext_resource type="Shader" path="res://others/psichedelic.gdshader" id="3_74g0l"]
+[ext_resource type="Shader" path="res://deprecated/psichedelic.gdshader" id="3_74g0l"]
 [ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_uur0k"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_f87i4"]

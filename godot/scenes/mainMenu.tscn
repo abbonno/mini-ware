@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=3 uid="uid://b22v6fnqcqds2"]
+[gd_scene load_steps=3 format=3 uid="uid://b22v6fnqcqds2"]
 
 [ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_i6vpc"]
-[ext_resource type="Texture2D" uid="uid://b2sfwuav1sbh4" path="res://icon.svg" id="2_tdmgd"]
 [ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_xwa1m"]
 
 [node name="MainMenu" type="Control"]
@@ -66,7 +65,6 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_font_sizes/font_size = 90
 text = "Play"
-icon = ExtResource("2_tdmgd")
 expand_icon = true
 
 [node name="ReturnButton" type="Button" parent="ButtonControl"]

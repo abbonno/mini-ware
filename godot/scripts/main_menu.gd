@@ -22,21 +22,19 @@ var current_index
 func _ready():
 	assetRecognition.load_dir_names_from_directory(Globals.LEVELS_PATH, levels_list)
 	
-	play_button.icon = load(Globals.IMG_PATH + Globals.PLAY_ICON + "." + assetRecognition.get_extension(Globals.IMG_PATH, Globals.PLAY_ICON))
-	assetRecognition.load_visual_resource(Globals.IMG_PATH, Globals.MAIN_MENU_BACKGROUND, background)
+	play_button.icon = load(Globals.MAIN_MENU_PATH + Globals.PLAY_ICON + "." + assetRecognition.get_extension(Globals.MAIN_MENU_PATH, Globals.PLAY_ICON))
+	assetRecognition.load_visual_resource(Globals.MAIN_MENU_PATH, Globals.MAIN_MENU_BACKGROUND, background)
 	
 	if !music_manager:
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
-	music_manager.play_music(load(Globals.MUSIC_PATH + Globals.MAIN_MENU_THEME + ".ogg"))
+	music_manager.play_music(load(Globals.MAIN_MENU_PATH + Globals.MAIN_MENU_THEME + "." + assetRecognition.get_extension(Globals.MAIN_MENU_PATH, Globals.MAIN_MENU_THEME)))
 	
 	for button in button_control.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
 	
-	if config.load(Globals.CONFIG_FILE) == OK:
-		current_index = config.get_value("level", "current_level", 0)
-	
+	current_index = config.get_value("level", "current_level", 0)
 	update_level_display(current_index)
 
 func _on_button_pressed(button_name):
@@ -70,19 +68,19 @@ func _on_button_pressed(button_name):
 			update_level_display(current_index)
 
 func update_level_display(index : int):
-	var current = Globals.LEVELS_PATH + levels_list[index] + "/"
+	var currentLevelPath = Globals.LEVELS_PATH + levels_list[index] + "/"
 
-	assetRecognition.load_visual_resource(current, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
-	level_name.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "level_name")
-	description.text = assetRecognition.get_json_element(current + Globals.MAIN_MENU_LEVEL_INFO + ".json", "description")
+	assetRecognition.load_visual_resource(currentLevelPath, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
+	level_name.text = assetRecognition.get_json_element(currentLevelPath + Globals.MAIN_MENU_LEVEL_INFO, Globals.LEVEL_NAME_FIELD)
+	description.text = assetRecognition.get_json_element(currentLevelPath + Globals.MAIN_MENU_LEVEL_INFO, Globals.DESCRIPTION_FIELD)
 
-	score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---"))
-	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/endless_score", 0))
+	score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.SCORE_FIELD, "---"))
+	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.ENDLESS_SCORE_FIELD, 0))
 	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.COMPLETE_FIELD, false):
 		complete.text = "COMPLETE"
 		complete.set("theme_override_colors/font_color", Color.GREEN)
 		var score_map = {"1": "C", "2": "B", "3": "A", "4": "S"}
-		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/score", "---")), "DOesnotwork")
+		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.SCORE_FIELD, "---")), "ERROR")
 		
 	else:
 		complete.text = "---"

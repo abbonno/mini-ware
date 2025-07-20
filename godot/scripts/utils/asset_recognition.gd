@@ -6,8 +6,8 @@ class_name AssetRecognition
 func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
 	if dir == null:
-		print("ERROR: Assets folder could not be found " + assetsFolder)
-		return
+		print("ERROR: Assets folder could not be found: " + assetsFolder)
+		return ""
 	var files = dir.get_files()
 	var regex = RegEx.new()
 	
@@ -32,7 +32,7 @@ func load_dir_names_from_directory(path: String, dir_list):
 			folder_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: dir folder could not be found ", path)
+		print("ERROR: dir folder could not be found: ", path)
 
 ## Loads the name of the files contained in the path folder into the file_list list
 func load_file_names_from_directory(path: String, file_list):
@@ -50,7 +50,7 @@ func load_file_names_from_directory(path: String, file_list):
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: files folder could not be found ", path)
+		print("ERROR: files folder could not be found: ", path)
 
 # Images
 
@@ -71,7 +71,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				sprite.set_anchors_preset(anchors)
 				container.add_child(sprite)
 			else:
-				print("ERROR: Image could not be loaded ", path)
+				print("ERROR: Image could not be loaded: ", path)
 				
 		"ogv":
 			var video_file = load(path)
@@ -84,7 +84,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				video.loop = true
 				container.add_child(video)
 			else:
-				print("ERROR: Video could not be loaded ", path)
+				print("ERROR: Video could not be loaded: ", path)
 				
 		"gdshader":
 			var shader_file = load(path)
@@ -104,9 +104,9 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				await shader_node.ready
 				shader_material.set_shader_parameter("resolution", container.size)
 			else:
-				print("ERROR: Shader could not be loaded ", path)
+				print("ERROR: Shader could not be loaded: ", path)
 		_:
-			print("ERROR: Unsuported extension ", ext) #inicio control errores, acordarse de poner más
+			print("ERROR: Unsuported visual element extension: ", ext) #inicio control errores, acordarse de poner más
 
 ### Poner separadas las funciones de arriba
 

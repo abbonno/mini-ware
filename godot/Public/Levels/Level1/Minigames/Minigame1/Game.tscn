@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://dfgxx76gh6fe7"]
+
+[ext_resource type="Script" path="res://Public/Levels/Level1/Minigames/Minigame1/game.gd" id="1_8xndc"]
+
+[node name="PlatformGame" type="Node2D"]
+script = ExtResource("1_8xndc")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1150, 650)
+color = Color(0.481515, 0.734033, 0.265164, 1)

@@ -51,12 +51,12 @@ var popup
 var minigame_info_path
 
 func _ready():
-	video_intro = load(current_level_path + Globals.INTRO_VID + Globals.VIDEO_EXT)
-	video_control =  load(current_level_path + Globals.INTRO_VID + Globals.VIDEO_EXT)
-	video_lose = load(current_level_path + Globals.LOSE_VID + Globals.VIDEO_EXT)
-	video_win_end = load(current_level_path + Globals.WIN_END_VID + Globals.VIDEO_EXT)
-	video_lose_end = load(current_level_path + Globals.LOSE_END_VID + Globals.VIDEO_EXT)
-	# Detección de la pista del nivel en la escena inicial
+	video_intro = load(current_level_path + Globals.VIDEOS_DIR + Globals.INTRO_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.INTRO_VID))
+	video_control = load(current_level_path + Globals.VIDEOS_DIR + Globals.CONTROL_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.CONTROL_VID))
+	video_lose = load(current_level_path + Globals.VIDEOS_DIR + Globals.LOSE_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.LOSE_VID))
+	video_win_end = load(current_level_path + Globals.VIDEOS_DIR + Globals.WIN_END_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.WIN_END_VID))
+	video_lose_end = load(current_level_path + Globals.VIDEOS_DIR + Globals.LOSE_END_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.LOSE_END_VID))
+	
 	var level_theme_path = current_level_path + Globals.LEVEL_THEME + "." + assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME)
 	if(FileAccess.file_exists(level_theme_path)):
 		level_theme = load(level_theme_path)
@@ -80,7 +80,7 @@ func _ready():
 			var healt_margin_container = MarginContainer.new()
 			healt_margin_container.custom_minimum_size = Vector2(125, 125)
 			health_container.add_child(healt_margin_container)
-			assetRecognition.load_visual_resource(current_level_path, "speed_up", healt_margin_container)
+			assetRecognition.load_visual_resource(current_level_path, Globals.HEALTH_SPRITE, healt_margin_container)
 	score_label.visible = false
 	score_label.text = str(score)
 	
@@ -110,7 +110,7 @@ func introduction_scene():
 func control_scene():
 	# Random minigame
 	minigame_index = choose_next_minigame_index()
-	minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO + Globals.JSON_EXT
+	minigame_info_path = minigames_path + minigames_list[minigame_index] + "/" + Globals.MINIGAME_INFO
 	
 	# Background
 	if win:
@@ -125,7 +125,7 @@ func control_scene():
 	
 	# Speedup popup
 	if !(score % SPEED_UP_SCORE) and score != 0 and music_manager.music.pitch_scale < 2:
-		assetRecognition.load_visual_resource(current_level_path, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+		assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 		popup_container.visible = true
 		# SONIDO: sonido de subir tempo (seta de mario), esperar a que acabe el sonido para subir el tempo
 		music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 
@@ -138,11 +138,12 @@ func control_scene():
 	
 	# Instructions popup
 	popup = assetRecognition.get_json_element(minigame_info_path, Globals.INSTRUCTION_FIELD) # Obtener el nombre de la instrucción del nivel escogido
-	assetRecognition.load_visual_resource(current_level_path, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+	assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 	popup_container.visible = true
 	await get_tree().create_timer(INSTRUCTIONS_POPUP_DURATION, false).timeout
 	popup_container.visible = false
-	popup_container.get_child(0).queue_free()
+	if popup_container.get_child(0):
+		popup_container.get_child(0).queue_free()
 	
 	# Change scene
 	video_player.stop()

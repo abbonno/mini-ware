@@ -1,7 +1,6 @@
 extends Node
 
 @onready var music = $Music
-@onready var sfx = $SFX
 
 var DURATION: float = 0.2
 
@@ -36,15 +35,3 @@ func stop_music(fade := true, fadeDuration := DURATION):
 	if fade:
 		await _fade_out_music(fadeDuration)
 	music.stop()
-
-func play_sfx(stream):
-	await ready # Puede ser innecesario
-	sfx.stream = stream
-	sfx.play()
-	#var sfx_player = AudioStreamPlayer.new()
-	#sfx_player.stream = stream
-	#sfx_player.bus = "SFX"
-	#sfx_player.autoplay = false
-	#get_tree().root.add_child(sfx_player)
-	#sfx_player.play()
-	#sfx_player.connect("finished", sfx_player, "queue_free")
