@@ -113,12 +113,14 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 # Data (podríamos hacer como con las imágenes algo general para json y cfg)
 
 ## Returns JSONelement found in JSON file given by JSONpath
-func get_json_element(json_path: String, key_path: String, default_value = null):
+func get_json_element(json_path: String, key_path: String, default_value = ""):
 	if not FileAccess.file_exists(json_path):
+		print("ERROR: JSON file has not been found: ", json_path)
 		return default_value
 
 	var file = FileAccess.open(json_path, FileAccess.READ)
 	if not file:
+		print("ERROR: JSON file could not be open: ", json_path)
 		return default_value
 
 	var content := file.get_as_text().strip_edges()
@@ -144,6 +146,7 @@ func get_json_element(json_path: String, key_path: String, default_value = null)
 ## Returns JSONelement found in JSON file given by JSONpath after decoding it
 func get_encrypted_json_element(json_path: String, key_path: String, default_value = null):
 	if not FileAccess.file_exists(json_path):
+		print("")
 		return default_value
 
 	var file = FileAccess.open(json_path, FileAccess.READ)

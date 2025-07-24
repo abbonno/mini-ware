@@ -36,6 +36,9 @@ func _ready():
 	
 	current_index = config.get_value("level", "current_level", 0)
 	update_level_display(current_index)
+	
+	if !level_has_minigame(current_index):
+		play_button.disabled = true
 
 func _on_button_pressed(button_name):
 	match button_name:
@@ -67,20 +70,45 @@ func _on_button_pressed(button_name):
 			config.save(Globals.CONFIG_FILE)
 			update_level_display(current_index)
 
-func update_level_display(index : int):
-	var currentLevelPath = Globals.LEVELS_PATH + levels_list[index] + "/"
+func update_level_display(level_index : int):
+	var current_level_path = Globals.LEVELS_PATH + levels_list[level_index] + "/"
 
-	assetRecognition.load_visual_resource(currentLevelPath, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
-	level_name.text = assetRecognition.get_json_element(currentLevelPath + Globals.MAIN_MENU_LEVEL_INFO, Globals.LEVEL_NAME_FIELD)
-	description.text = assetRecognition.get_json_element(currentLevelPath + Globals.MAIN_MENU_LEVEL_INFO, Globals.DESCRIPTION_FIELD)
+	assetRecognition.load_visual_resource(current_level_path, Globals.MAIN_MENU_LEVEL_PICTURE, level_picture)
+	level_name.text = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.LEVEL_NAME_FIELD)
+	description.text = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.DESCRIPTION_FIELD)
 
-	score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.SCORE_FIELD, "---"))
-	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.ENDLESS_SCORE_FIELD, 0))
-	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.COMPLETE_FIELD, false):
+	score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[level_index] + "/" + Globals.SCORE_FIELD, "---"))
+	endless_score.text = str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[level_index] + "/" + Globals.ENDLESS_SCORE_FIELD, 0))
+	if assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[level_index] + "/" + Globals.COMPLETE_FIELD, false):
 		complete.text = "COMPLETE"
 		complete.set("theme_override_colors/font_color", Color.GREEN)
 		var score_map = {"1": "C", "2": "B", "3": "A", "4": "S"}
-		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.SCORE_FIELD, "---")), "ERROR")
+		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[level_index] + "/" + Globals.SCORE_FIELD, "---")), "ERROR")
 	else:
 		complete.text = "---"
 		complete.set("theme_override_colors/font_color", Color.RED)
+	
+	if level_has_minigame(current_index):
+		play_button.disabled = false
+
+func level_has_minigame(level_index: int):
+	var minigames_base_path = Globals.LEVELS_PATH + levels_list[level_index] + "/" + Globals.MINIGAMES_DIR
+	var dir = DirAccess.open(minigames_base_path)
+	if dir == null:
+		print("ERROR: Minigames folder not found on the path: ", minigames_base_path)
+		return false
+	
+	dir.list_dir_begin()
+	var first_folder = dir.get_next()
+	dir.list_dir_end()
+	var minigame_path = minigames_base_path + first_folder + "/"
+	var subdir = DirAccess.open(minigame_path)
+	subdir.list_dir_begin()
+	var file = subdir.get_next()
+	while file != "":
+		if file == "Game.tscn":
+			return true
+		file = subdir.get_next()
+	subdir.list_dir_end()
+	print("ERROR: Minigame scene not found on: ", minigame_path)
+	return false

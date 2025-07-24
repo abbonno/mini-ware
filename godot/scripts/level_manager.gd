@@ -12,7 +12,6 @@ signal minigame_result(win: bool)
 @onready var score_label = $UIContainer/ScoreLabel
 @onready var minigame_container = $MinigameContainer
 @onready var minigame_timer = $Timer
-@onready var time_label = $TimeIndicatorContainer/TimeIndicatorLabel
 @onready var time_sprite = $TimeIndicatorContainer/TimeIndicatorSpriteContainer
 @onready var options = $Options
 @onready var post_process_material = $shaderEffects.material
@@ -51,9 +50,12 @@ var popup
 var minigame_info_path
 
 func _ready():
-	max_lives = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.MAX_LIVES_FIELD)
-	goal_score = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.GOAL_SCORE_FIELD)
-	speed_up_score = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.SPEED_UP_SCORE_FIELD)
+	if assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.MAX_LIVES_FIELD) != "":
+		max_lives = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.MAX_LIVES_FIELD)
+	if assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.GOAL_SCORE_FIELD) != "":
+		goal_score = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.GOAL_SCORE_FIELD)
+	if assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.SPEED_UP_SCORE_FIELD) != "":
+		speed_up_score = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.SPEED_UP_SCORE_FIELD)
 	lives = max_lives if max_lives < 9 else 9
 	
 	video_intro = load(current_level_path + Globals.VIDEOS_DIR + Globals.INTRO_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.INTRO_VID))
@@ -162,9 +164,10 @@ func game_scene():
 	minigame = load(minigames_path + minigames_list[minigame_index] + "/" + Globals.GAME_SCENE).instantiate()
 	if minigame.has_method("set_game_info"):
 		minigame.set_game_info(score)
-	minigame.win.connect(Callable(self, "_on_minigame_result"))
+	if minigame.has_signal("win"):
+		minigame.win.connect(Callable(self, "_on_minigame_result"))
 	minigame_container.add_child(minigame)
-	minigame_timer.wait_time = assetRecognition.get_json_element(minigame_info_path, Globals.DURATION_FIELD)
+	minigame_timer.wait_time = assetRecognition.get_json_element(minigame_info_path, Globals.DURATION_FIELD, 2)
 	minigame_timer.start()
 	_run_timer_feedback()
 	await minigame_timer.timeout
@@ -246,14 +249,11 @@ func calculate_rank(max_lives: int, lives_lost: int):
 
 func _run_timer_feedback():
 	var active_animation = false
-	time_label.visible = true
 	while minigame_timer.time_left > 0 and !active_animation:
-		time_label.text = str(minigame_timer.time_left)
 		if minigame_timer.time_left <= TIME_WARNING:
 			_run_clock_animation()
 			active_animation = true
 		await get_tree().create_timer(0.1, false).timeout
-	time_label.visible = false
 
 func _run_clock_animation():
 	time_sprite.visible = true

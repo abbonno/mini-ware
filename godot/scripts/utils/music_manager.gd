@@ -25,7 +25,6 @@ func play_music(stream, fade := true, fadeDuration := DURATION):
 		_fade_out_music(fadeDuration)
 		await get_tree().create_timer(fadeDuration).timeout
 	music.stream = stream
-	music.stream.loop = true
 	music.volume_db = -40
 	music.play()
 	if fade:

@@ -1,7 +1,0 @@
-{
-	"description": "Este es el nivel 2",
-	"level_name": "Nivel 2",
-	"max_lives": 4,
-	"goal_score": 10,
-	"speed_up_score": 2
-}

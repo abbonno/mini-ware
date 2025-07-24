@@ -1,7 +1,0 @@
-[center][font_size=32][b]Gracias por jugar!!![/b][/font_size][/center]
-
-[center][font_size=28][b]Especial agradecimiento a:[/b][/font_size][/center]
-
-[center][font_size=24][b]Desarrolladores[/b][/font_size][/center]
-[center]Juan Pérez     Alba Gómez[/center]
-[center]Victorino Palma     Dario Zamorano[/center]
