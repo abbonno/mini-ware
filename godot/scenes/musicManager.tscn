@@ -5,6 +5,10 @@
 [node name="MusicManager" type="Node"]
 script = ExtResource("1_7ujqt")
 
+[node name="SFX" type="AudioStreamPlayer2D" parent="."]
+bus = &"SFX"
+
 [node name="Music" type="AudioStreamPlayer2D" parent="."]
+bus = &"Music"
 
 [node name="FadeTimer" type="Timer" parent="."]

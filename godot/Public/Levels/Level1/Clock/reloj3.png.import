@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d16d76s7ag16j"
-path="res://.godot/imported/healthSprite.svg-99456eeb73ffa9dd82cefca99b2b0d1d.ctex"
+uid="uid://b4s0f8phdn76j"
+path="res://.godot/imported/reloj3.png-1cd7d3477bc4b8013578a20da0597f27.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Public/Levels/Level2/healthSprite.svg"
-dest_files=["res://.godot/imported/healthSprite.svg-99456eeb73ffa9dd82cefca99b2b0d1d.ctex"]
+source_file="res://Public/Levels/Level1/Clock/reloj3.png"
+dest_files=["res://.godot/imported/reloj3.png-1cd7d3477bc4b8013578a20da0597f27.ctex"]
 
 [params]
 
@@ -32,6 +32,3 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
-svg/scale=1.0
-editor/scale_with_editor_scale=false
-editor/convert_colors_with_editor_theme=false

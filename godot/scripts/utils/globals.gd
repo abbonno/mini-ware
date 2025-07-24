@@ -42,6 +42,9 @@ const MAIN_MENU_LEVEL_INFO = "info.json"
 		# Level info.json
 const DESCRIPTION_FIELD = "description"
 const LEVEL_NAME_FIELD = "level_name"
+const MAX_LIVES_FIELD = "max_lives"
+const GOAL_SCORE_FIELD = "goal_score"
+const SPEED_UP_SCORE_FIELD = "speed_up_score"
 
 		# Level stored data
 const SCORE_FIELD = "score"
@@ -58,6 +61,7 @@ const LOSE_END_VID = "loseEndVid"
 const HEALTH_SPRITE = "healthSprite"
 const SPEED_UP_POPUP = "speed_up"
 const LEVEL_THEME = "levelTheme"
+const SPEEDUP_SFX = "speedUpSFX"
 const GAME_SCENE = "Game.tscn"
 const MINIGAME_INFO = "info.json"
 

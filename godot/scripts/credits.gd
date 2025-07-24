@@ -10,7 +10,7 @@ extends Control
 @onready var title_button = $TitleButton
 
 var scroll_speed = 80.0
-var scroll_acceleration = 200.0     # when button pressed
+var scroll_acceleration = 200.0
 var is_paused = false
 
 func _ready():
@@ -31,24 +31,15 @@ func load_credits(path: String):
 	if not FileAccess.file_exists(path):
 		label.text = "[color=red]No credits file found.[/color]"
 		return
-	
+
 	var file = FileAccess.open(path, FileAccess.READ)
-	var lines = file.get_as_text().split("\n")
+	var content = file.get_as_text()
 	file.close()
 
-	label.clear()
-	for line in lines:
-		line = line.strip_edges()
-		if line.begins_with("[") and line.ends_with("]"):
-			var title = line.substr(1, line.length() - 2)
-			label.append_text("[center][b]" + title + "[/b][/center]\n")
-		elif line != "":
-			label.append_text("[center]" + line + "[/center]\n")
-		else:
-			label.append_text("\n")
-
-	label.scroll_active = false
 	label.bbcode_enabled = true
+	label.scroll_active = false
+	label.clear()
+	label.append_text(content)
 
 func _process(delta):
 	if is_paused:

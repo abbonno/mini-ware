@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b412k5oisghaw"
-path="res://.godot/imported/instruction.png-1258f37bf87b55e96dfd2ce6dedffb51.ctex"
+uid="uid://cbolfjvvq0eq0"
+path="res://.godot/imported/speed_up.png-2e5f69d94d03d945cfeb16acad617043.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Public/Levels/Level2/instruction.png"
-dest_files=["res://.godot/imported/instruction.png-1258f37bf87b55e96dfd2ce6dedffb51.ctex"]
+source_file="res://Public/Levels/Level2/Popups/speed_up.png"
+dest_files=["res://.godot/imported/speed_up.png-2e5f69d94d03d945cfeb16acad617043.ctex"]
 
 [params]
 

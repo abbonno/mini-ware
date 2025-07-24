@@ -81,7 +81,6 @@ func update_level_display(index : int):
 		complete.set("theme_override_colors/font_color", Color.GREEN)
 		var score_map = {"1": "C", "2": "B", "3": "A", "4": "S"}
 		score.text = score_map.get(str(assetRecognition.get_encrypted_json_element(Globals.DATA_FILE, levels_list[index] + "/" + Globals.SCORE_FIELD, "---")), "ERROR")
-		
 	else:
 		complete.text = "---"
 		complete.set("theme_override_colors/font_color", Color.RED)

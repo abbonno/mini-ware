@@ -46,7 +46,7 @@ func _on_Timer_timeout():
 func _show_color(color_index):
 	var button = buttons[color_index]
 	button.modulate = Color.GRAY # Simula "iluminación"
-	audio_player.stream = load("res://Levels/Level1/Minigames/Minigame2/" + COLORS[color_index] + ".ogg")
+	audio_player.stream = load("res://Public/Levels/Level1/Minigames/Minigame2/" + COLORS[color_index] + ".ogg")
 	audio_player.play()
 	await get_tree().create_timer(0.3).timeout
 	button.modulate = Color(COLORS[color_index])

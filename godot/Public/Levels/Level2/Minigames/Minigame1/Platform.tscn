@@ -1,6 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cd8ybxoqytmrd"]
+[gd_scene load_steps=3 format=3 uid="uid://b2hlt5nmf82vx"]
 
-[ext_resource type="Texture2D" uid="uid://epenj6kgxb1w" path="res://Public/Img/boton.png" id="1_mg2ea"]
+[ext_resource type="Texture2D" uid="uid://dt3v1imsat7dc" path="res://Public/Levels/Level1/Minigames/Minigame1/player.png" id="1_8auqv"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_dc4ug"]
 size = Vector2(257, 32)
@@ -10,7 +10,7 @@ size = Vector2(257, 32)
 [node name="PlatformSprite" type="Sprite2D" parent="."]
 position = Vector2(1.5, 0)
 scale = Vector2(1.56707, 1)
-texture = ExtResource("1_mg2ea")
+texture = ExtResource("1_8auqv")
 
 [node name="PlatformCollision" type="CollisionShape2D" parent="."]
 position = Vector2(1.5, 0)

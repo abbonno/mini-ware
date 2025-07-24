@@ -1,6 +1,7 @@
 extends Node
 
 @onready var music = $Music
+@onready var SFX = $SFX
 
 var DURATION: float = 0.2
 
@@ -24,6 +25,7 @@ func play_music(stream, fade := true, fadeDuration := DURATION):
 		_fade_out_music(fadeDuration)
 		await get_tree().create_timer(fadeDuration).timeout
 	music.stream = stream
+	music.stream.loop = true
 	music.volume_db = -40
 	music.play()
 	if fade:
@@ -35,3 +37,8 @@ func stop_music(fade := true, fadeDuration := DURATION):
 	if fade:
 		await _fade_out_music(fadeDuration)
 	music.stop()
+	
+func play_sound(stream):
+	SFX.stream = stream
+	SFX.play()
+	

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bd3vas24151hm"
-path="res://.godot/imported/arrows.png-b3efee4a7f88fa6f19d5728f6e51570a.ctex"
+uid="uid://bdcxqiagmofm6"
+path="res://.godot/imported/reloj4.png-004a156806d9d8b2b8ffa71b58aff059.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Public/Levels/Level2/arrows.png"
-dest_files=["res://.godot/imported/arrows.png-b3efee4a7f88fa6f19d5728f6e51570a.ctex"]
+source_file="res://Public/Levels/Level1/Clock/reloj4.png"
+dest_files=["res://.godot/imported/reloj4.png-004a156806d9d8b2b8ffa71b58aff059.ctex"]
 
 [params]
 

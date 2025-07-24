@@ -2,29 +2,39 @@ extends Node2D
 
 signal win
 
-
 @onready var player_scene = load(get_script().resource_path.get_base_dir().path_join("Player.tscn"))
 @onready var platform_scene = load(get_script().resource_path.get_base_dir().path_join("Platform.tscn"))
 @onready var flag_scene = load(get_script().resource_path.get_base_dir().path_join("Flag.tscn"))
+@onready var music_manager = get_tree().get_root().get_node("MusicManager")
+
+var current_score = 0
 
 func _ready():
+	music_manager.play_music(load("res://Public/Levels/Level1/Minigames/Minigame1/levelTheme.ogg"))
 	var pattern = choose_level_pattern()
 	spawn_level(pattern)
 
+func set_game_info(puntuacion):
+	current_score = puntuacion
+
 func choose_level_pattern() -> Array:
 	# Ejemplo de patrón sencillo
-	return [
-		{"type": "platform", "pos": Vector2(300, 500)},
-		{"type": "flag", "pos": Vector2(400, 450)},
-		{"type": "player", "pos": Vector2(250, 450)},
-	]
-	#return [
-		#{"type": "platform", "pos": Vector2(100, 200)},
-		#{"type": "platform", "pos": Vector2(400, 350)},
-		#{"type": "platform", "pos": Vector2(600, 600)},
-		#{"type": "flag", "pos": Vector2(700, 500)},
-		#{"type": "player", "pos": Vector2(100, 150)},
-	#]
+	print(current_score)
+	
+	if current_score < 0:
+		return [
+			{"type": "platform", "pos": Vector2(300, 500)},
+			{"type": "flag", "pos": Vector2(400, 450)},
+			{"type": "player", "pos": Vector2(250, 450)},
+		]
+	else:
+		return [
+			{"type": "platform", "pos": Vector2(100, 200)},
+			{"type": "platform", "pos": Vector2(400, 350)},
+			{"type": "platform", "pos": Vector2(600, 600)},
+			{"type": "flag", "pos": Vector2(700, 500)},
+			{"type": "player", "pos": Vector2(100, 150)},
+		]
 
 func spawn_level(pattern: Array):
 	for element in pattern:
@@ -46,14 +56,19 @@ func spawn_level(pattern: Array):
 
 func _on_win():
 	print("¡Victoria!")
+
+	var sfx_node = $AudioStreamPlayer2D
+	if not sfx_node.playing:
+		sfx_node.play()  
 	_set_paused_recursively($".", true)
+	music_manager.stop_music()
 	emit_signal("win", true)
 
 func _on_player_fell():
 	print("Jugador cayó")
 	_set_paused_recursively($".", true)
+	music_manager.stop_music()
 	emit_signal("win", false)
-
 
 func _set_paused_recursively(node: Node, paused: bool) -> void:
 	node.set_process(not paused)

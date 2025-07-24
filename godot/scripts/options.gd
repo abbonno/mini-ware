@@ -4,14 +4,14 @@ signal close_options
 signal open_options
 signal exit_to_main_menu
 
+var config = ConfigFile.new()
+var bus_index : int
+
 @onready var fullscreen = $OptionsPanel/OptionsBackground/OptionsButtonContainer/FullScreenButton
 @onready var volume = $OptionsPanel/OptionsBackground/OptionsButtonContainer/VolumeSlider
 @onready var returnButton = $OptionsPanel/OptionsBackground/OptionsButtonContainer/OptionsReturnButton
 @onready var exitButton = $OptionsPanel/OptionsBackground/OptionsButtonContainer/OptionsExitButton
 @onready var confirm_dialog = $ConfirmExitDialog
-
-var config = ConfigFile.new()
-var bus_index : int
 
 func _ready():
 	returnButton.connect("pressed", Callable(self, "_on_button_pressed").bind(returnButton.name))
@@ -23,10 +23,10 @@ func _ready():
 		var volume_value = config.get_value("audio", "music_volume", 0.5)
 		volume.value = volume_value
 	volume.value_changed.connect(_on_volume_slider_value_changed)
-	bus_index = AudioServer.get_bus_index("Music")
+	bus_index = AudioServer.get_bus_index("Master")
 
 func _unhandled_input(event):
-	if event.is_action_pressed("ui_cancel"): # Mapped to "ESC" button
+	if event.is_action_pressed("ui_cancel"):
 		if self.visible:
 			self.visible = false
 			close_options.emit()
