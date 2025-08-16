@@ -113,5 +113,5 @@ func level_has_minigame(level_index: int):
 			return true
 		file = subdir.get_next()
 	subdir.list_dir_end()
-	print("ERROR: Minigame scene not found on: ", minigame_path)
+	print("MAIN MENU ERROR: Minigame scene not found on: ", minigame_path)
 	return false
