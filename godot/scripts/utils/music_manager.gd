@@ -21,6 +21,8 @@ func _fade_volume(player, from: float, to: float, fadeDuration: float):
 	player.volume_db = to
 
 func play_music(stream, fade := true, fadeDuration := DURATION):
+	music.connect("finished", Callable(self, "_on_music_finished"))
+
 	if fade:
 		_fade_out_music(fadeDuration)
 		await get_tree().create_timer(fadeDuration).timeout
@@ -40,4 +42,7 @@ func stop_music(fade := true, fadeDuration := DURATION):
 func play_sound(stream):
 	SFX.stream = stream
 	SFX.play()
-	
+
+func _on_music_finished():
+	if music.stream:
+		music.play()

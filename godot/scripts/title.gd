@@ -27,7 +27,11 @@ func _ready():
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
-	music_manager.play_music(load(Globals.TITLE_PATH + Globals.TITLE_THEME + "." + assetRecognition.get_extension(Globals.TITLE_PATH, Globals.TITLE_THEME)))
+	var title_theme = load(Globals.TITLE_PATH + Globals.TITLE_THEME + "." + assetRecognition.get_extension(Globals.TITLE_PATH, Globals.TITLE_THEME))
+	if title_theme:
+		music_manager.play_music(title_theme)
+	else:
+		print("TITLE ERROR: Theme asset not found.")
 	
 	for button in button_container.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))

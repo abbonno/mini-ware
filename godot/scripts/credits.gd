@@ -18,18 +18,22 @@ func _ready():
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
-	music_manager.play_music(load(Globals.CREDITS_PATH + Globals.CREDITS_THEME + "." + assetRecognition.get_extension(Globals.CREDITS_PATH, Globals.CREDITS_THEME)))
+	var title_theme = load(Globals.CREDITS_PATH + Globals.CREDITS_THEME + "." + assetRecognition.get_extension(Globals.CREDITS_PATH, Globals.CREDITS_THEME))
+	if title_theme:
+		music_manager.play_music(title_theme)
+	else:
+		print("CREDITS ERROR: Theme asset not found.")
 	
 	title_button.connect("pressed", Callable(self, "_on_button_pressed").bind(title_button.name))
 
 	assetRecognition.load_visual_resource(Globals.CREDITS_PATH, Globals.CREDITS_BACKGROUND, background)
 	
 	load_credits(Globals.CREDITS_PATH + Globals.CREDITS)
-	scroll.scroll_vertical = 0
 
 func load_credits(path: String):
 	if not FileAccess.file_exists(path):
 		label.text = "[color=red]No credits file found.[/color]"
+		print("CREDITS ERROR: Credits file not found.")
 		return
 
 	var file = FileAccess.open(path, FileAccess.READ)

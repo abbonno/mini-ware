@@ -132,7 +132,7 @@ func control_scene():
 	score_label.visible = true
 	
 	# Speedup popup
-	if !(score % int(speed_up_score)) and score != 0 and music_manager.music.pitch_scale < 2:
+	if win and !(score % int(speed_up_score)) and score != 0 and music_manager.music.pitch_scale < 2:
 		assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 		popup_container.visible = true
 		music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 
@@ -182,7 +182,6 @@ func game_scene():
 			return
 	else:
 		lives = lives-1
-		score = score+1
 		health_container.get_child(lives).free()
 		if lives <= 0:
 			end_scene()

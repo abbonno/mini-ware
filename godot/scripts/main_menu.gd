@@ -29,7 +29,11 @@ func _ready():
 		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
 		get_tree().get_root().call_deferred("add_child", music_manager)
 		await get_tree().process_frame
-	music_manager.play_music(load(Globals.MAIN_MENU_PATH + Globals.MAIN_MENU_THEME + "." + assetRecognition.get_extension(Globals.MAIN_MENU_PATH, Globals.MAIN_MENU_THEME)))
+	var title_theme = load(Globals.MAIN_MENU_PATH + Globals.MAIN_MENU_THEME + "." + assetRecognition.get_extension(Globals.MAIN_MENU_PATH, Globals.MAIN_MENU_THEME))
+	if title_theme:
+		music_manager.play_music(title_theme)
+	else:
+		print("MAIN MENU ERROR: Theme asset not found.")
 	
 	for button in button_control.get_children():
 		button.connect("pressed", Callable(self, "_on_button_pressed").bind(button.name))
@@ -47,7 +51,6 @@ func _on_button_pressed(button_name):
 		"PlayButton":
 			music_manager.stop_music()
 			var level_index = levels_list[current_index]
-			print(level_index)
 			var levelManagerScene = load(Globals.LEVEL_MANAGER_SCENE).instantiate()
 			levelManagerScene.set_level_index(str(level_index))
 			levelManagerScene.set_endless(endless_mode_button.button_pressed)
@@ -95,7 +98,7 @@ func level_has_minigame(level_index: int):
 	var minigames_base_path = Globals.LEVELS_PATH + levels_list[level_index] + "/" + Globals.MINIGAMES_DIR
 	var dir = DirAccess.open(minigames_base_path)
 	if dir == null:
-		print("ERROR: Minigames folder not found on the path: ", minigames_base_path)
+		print("MAIN MENU ERROR: Minigames folder not found on the path: ", minigames_base_path)
 		return false
 	
 	dir.list_dir_begin()

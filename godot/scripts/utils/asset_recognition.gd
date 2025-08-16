@@ -6,7 +6,7 @@ class_name AssetRecognition
 func get_extension(assetsFolder: String, fileName: String):
 	var dir = DirAccess.open(assetsFolder)
 	if dir == null:
-		print("ERROR: Assets folder could not be found: " + assetsFolder)
+		print("ASSET RECOGNITION ERROR: Assets folder could not be found: " + assetsFolder)
 		return ""
 	var files = dir.get_files()
 	var regex = RegEx.new()
@@ -14,11 +14,11 @@ func get_extension(assetsFolder: String, fileName: String):
 	regex.compile("^" + fileName + "\\.(.+)$")
 	for file in files:
 		if file.ends_with(".import"):
-			continue # Ignora los archivos .import
+			continue
 		var match = regex.search(file)
 		if match:
-			return match.get_string(1).to_lower() # Devuelve la extensión del archivo
-	return "" # Devuelve string vacío para evitar errores por el uso de Nil (ex: Invalid operands 'String' and 'Nil' in operator '+'.)
+			return match.get_string(1).to_lower()
+	return ""
 
 ## Loads the name of the directories contained in the path folder into the dir_list list
 func load_dir_names_from_directory(path: String, dir_list):
@@ -32,7 +32,7 @@ func load_dir_names_from_directory(path: String, dir_list):
 			folder_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: dir folder could not be found: ", path)
+		print("ASSET RECOGNITION ERROR: Dir folder could not be found: ", path)
 
 ## Loads the name of the files contained in the path folder into the file_list list
 func load_file_names_from_directory(path: String, file_list):
@@ -45,12 +45,12 @@ func load_file_names_from_directory(path: String, file_list):
 				var dot_index = file_name.rfind(".")
 				if dot_index != -1:
 					var base_name = file_name.substr(0, dot_index)
-					if not file_list.has(base_name): # evita duplicados si hay reloj14.png y reloj14.import
+					if not file_list.has(base_name):
 						file_list.append(base_name)
 			file_name = dir.get_next()
 		dir.list_dir_end()
 	else:
-		print("ERROR: files folder could not be found: ", path)
+		print("ASSET RECOGNITION ERROR: Files folder could not be found: ", path)
 
 # Images
 
@@ -59,6 +59,9 @@ func load_file_names_from_directory(path: String, file_list):
 ## other container's atributes (expand, stretch,  anchors).
 func load_visual_resource(assetsFolder: String, fileName: String, container, expand = TextureRect.EXPAND_FIT_WIDTH, stretch = TextureRect.STRETCH_SCALE, anchors = Control.PRESET_FULL_RECT):
 	var ext = get_extension(assetsFolder, fileName)
+	if ext == "":
+		print("ASSET RECOGNITION ERROR: Visual element file not found: ", assetsFolder + fileName)
+		return
 	var path = assetsFolder + fileName + "." + ext
 	match ext:
 		"bmp", "dds", "ktx", "exr", "hdr", "jpg", "jpeg", "png", "tga", "svg", "webp" :
@@ -71,7 +74,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				sprite.set_anchors_preset(anchors)
 				container.add_child(sprite)
 			else:
-				print("ERROR: Image could not be loaded: ", path)
+				print("ASSET RECOGNITION ERROR: Image could not be loaded: ", path)
 				
 		"ogv":
 			var video_file = load(path)
@@ -84,7 +87,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				video.loop = true
 				container.add_child(video)
 			else:
-				print("ERROR: Video could not be loaded: ", path)
+				print("ASSET RECOGNITION ERROR: Video could not be loaded: ", path)
 				
 		"gdshader":
 			var shader_file = load(path)
@@ -99,28 +102,24 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				shader_node.size_flags_vertical = Control.SIZE_EXPAND_FILL
 
 				container.add_child(shader_node)
-
-				# Esperamos a que el nodo tenga tamaño real para pasar la resolución
 				await shader_node.ready
 				shader_material.set_shader_parameter("resolution", container.size)
 			else:
-				print("ERROR: Shader could not be loaded: ", path)
+				print("ASSET RECOGNITION ERROR: Shader could not be loaded: ", path)
 		_:
-			print("ERROR: Unsuported visual element extension: ", ext) #inicio control errores, acordarse de poner más
-
-### Poner separadas las funciones de arriba
+			print("ASSET RECOGNITION ERROR: Unsuported visual element extension: ", ext)
 
 # Data (podríamos hacer como con las imágenes algo general para json y cfg)
 
 ## Returns JSONelement found in JSON file given by JSONpath
 func get_json_element(json_path: String, key_path: String, default_value = ""):
 	if not FileAccess.file_exists(json_path):
-		print("ERROR: JSON file has not been found: ", json_path)
+		print("ASSET RECOGNITION ERROR: JSON file has not been found: ", json_path)
 		return default_value
 
 	var file = FileAccess.open(json_path, FileAccess.READ)
 	if not file:
-		print("ERROR: JSON file could not be open: ", json_path)
+		print("ASSET RECOGNITION ERROR: JSON file could not be open: ", json_path)
 		return default_value
 
 	var content := file.get_as_text().strip_edges()
@@ -146,7 +145,7 @@ func get_json_element(json_path: String, key_path: String, default_value = ""):
 ## Returns JSONelement found in JSON file given by JSONpath after decoding it
 func get_encrypted_json_element(json_path: String, key_path: String, default_value = null):
 	if not FileAccess.file_exists(json_path):
-		print("")
+		print("ASSET RECOGNITION ERROR: JSON file not found on: ", json_path)
 		return default_value
 
 	var file = FileAccess.open(json_path, FileAccess.READ)
