@@ -1,0 +1,253 @@
+[gd_scene load_steps=8 format=3 uid="uid://b22v6fnqcqds2"]
+
+[ext_resource type="Script" path="res://scripts/main_menu.gd" id="1_i6vpc"]
+[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_xwa1m"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_vq1rl"]
+font_size = 40
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_lmxy8"]
+font_size = 22
+
+[sub_resource type="LabelSettings" id="LabelSettings_lc5e0"]
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_o6pnk"]
+line_spacing = 0.0
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_gutbo"]
+font_size = 20
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_i6vpc")
+
+[node name="Background" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="LevelPicturePanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -175.0
+offset_top = -175.0
+offset_right = 175.0
+offset_bottom = 175.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ButtonControl" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="OptionsButton" type="Button" parent="ButtonControl"]
+layout_mode = 0
+offset_left = 39.0
+offset_top = 26.0
+offset_right = 119.0
+offset_bottom = 57.0
+text = "Opciones"
+
+[node name="PlayButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -175.0
+offset_top = -142.0
+offset_right = 175.0
+offset_bottom = -10.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 70
+disabled = true
+text = "Jugar"
+expand_icon = true
+
+[node name="ReturnButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 39.0
+offset_top = -99.0
+offset_right = 165.0
+offset_bottom = -30.0
+grow_vertical = 0
+theme_override_font_sizes/font_size = 20
+text = "Volver"
+
+[node name="NextLevelButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 205.0
+offset_top = -45.0
+offset_right = 305.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Siguiente"
+
+[node name="PrevLevelButton" type="Button" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -306.0
+offset_top = -45.0
+offset_right = -206.0
+offset_bottom = 45.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Anterior"
+
+[node name="EndlessModeButton" type="CheckButton" parent="ButtonControl"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 194.0
+offset_top = 211.0
+offset_right = 316.0
+offset_bottom = 279.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 20
+text = "Endless"
+
+[node name="LevelName" type="Label" parent="."]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -90.0
+offset_top = 80.0
+offset_right = 90.0
+offset_bottom = 150.0
+grow_horizontal = 2
+text = "<Level Title>"
+label_settings = SubResource("LabelSettings_vq1rl")
+horizontal_alignment = 1
+
+[node name="LevelInfoPanel" type="Panel" parent="."]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -225.0
+offset_top = -285.0
+offset_right = -42.0
+offset_bottom = 293.0
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="LevelInfoContainer" type="VBoxContainer" parent="LevelInfoPanel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="CompleteLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="CompleteLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/CompleteLabelContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
+text = "<complete>"
+horizontal_alignment = 1
+
+[node name="ScoreLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="ScoresContainer" type="VBoxContainer" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer"]
+layout_mode = 2
+
+[node name="ScoreTitleLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "Puntuación:"
+label_settings = SubResource("LabelSettings_lmxy8")
+horizontal_alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "<score>"
+label_settings = SubResource("LabelSettings_lc5e0")
+horizontal_alignment = 1
+
+[node name="EndlessScoreTitleLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "Puntuación modo
+endless:"
+label_settings = SubResource("LabelSettings_o6pnk")
+horizontal_alignment = 1
+
+[node name="EndlessScoreLabel" type="Label" parent="LevelInfoPanel/LevelInfoContainer/ScoreLabelContainer/ScoresContainer"]
+layout_mode = 2
+text = "<endless_mode
+_score>"
+label_settings = SubResource("LabelSettings_gutbo")
+horizontal_alignment = 1
+
+[node name="HSeparator" type="HSeparator" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+
+[node name="DescriptionLabelContainer" type="MarginContainer" parent="LevelInfoPanel/LevelInfoContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="DescriptionLabel" type="RichTextLabel" parent="LevelInfoPanel/LevelInfoContainer/DescriptionLabelContainer"]
+layout_mode = 2
+text = "<Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec imperdiet ac leo a tincidunt. Pellentesque facilisis gravida orci, sed imperdiet ligula vestibulum sed. Duis venenatis libero eget est maximus, non varius velit gravida. Aenean non varius urna. Phasellus vestibulum dui et dui pharetra elementum sed at orci. Cras euismod elementum porttitor. Nulla vitae ipsum nibh. Aliquam bibendum lorem in nunc dapibus semper. Pellentesque laoreet mauris quis lectus iaculis sollicitudin. Donec tincidunt purus a elit dapibus, a blandit lorem laoreet. Duis nisl ante, lobortis vel arcu a, lacinia auctor metus. Donec pulvinar leo non ante volutpat, nec eleifend erat cursus.>"
+autowrap_mode = 2
+
+[node name="Options" parent="." instance=ExtResource("3_xwa1m")]
+visible = false
+layout_mode = 1

@@ -1,0 +1,124 @@
+[gd_scene load_steps=5 format=3 uid="uid://xcy1pul163hq"]
+
+[ext_resource type="Script" path="res://scripts/level_manager.gd" id="1_l51yg"]
+[ext_resource type="Shader" path="res://others/psichedelic.gdshader" id="3_74g0l"]
+[ext_resource type="PackedScene" uid="uid://dcbrl5miuvflu" path="res://scenes/options.tscn" id="3_uur0k"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f87i4"]
+shader = ExtResource("3_74g0l")
+shader_parameter/time = null
+shader_parameter/wave_intensity = 0.005
+shader_parameter/wave_frequency = 8.0
+shader_parameter/color_shift_intensity = 0.3
+shader_parameter/color_cycle_speed = 1.0
+shader_parameter/chromatic_aberration = 0.002
+
+[node name="LevelManager" type="Node"]
+script = ExtResource("1_l51yg")
+
+[node name="UIContainer" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+autoplay = true
+expand = true
+
+[node name="HealthContainer" type="HBoxContainer" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -306.0
+offset_top = -200.0
+offset_right = 306.0
+offset_bottom = -75.0
+grow_horizontal = 2
+grow_vertical = 0
+alignment = 1
+
+[node name="ScoreLabel" type="Label" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -75.0
+offset_top = 30.0
+offset_right = 75.0
+offset_bottom = 180.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 100
+text = "..."
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="PopupContainer" type="MarginContainer" parent="UIContainer"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -180.0
+offset_right = 180.0
+offset_bottom = 180.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="MinigameContainer" type="Node2D" parent="."]
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="TimeIndicatorContainer" type="CanvasLayer" parent="."]
+
+[node name="TimeIndicatorLabel" type="Label" parent="TimeIndicatorContainer"]
+visible = false
+offset_left = 29.0
+offset_top = 53.0
+offset_right = 123.0
+offset_bottom = 102.0
+text = "<timer>"
+
+[node name="TimeIndicatorSpriteContainer" type="MarginContainer" parent="TimeIndicatorContainer"]
+custom_minimum_size = Vector2(900, 100)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -450.0
+offset_top = -115.0
+offset_right = 450.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 0
+size_flags_horizontal = 4
+size_flags_vertical = 3
+
+[node name="shaderEffects" type="ColorRect" parent="."]
+visible = false
+material = SubResource("ShaderMaterial_f87i4")
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Options" parent="." instance=ExtResource("3_uur0k")]
+process_mode = 3
+visible = false

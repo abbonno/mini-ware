@@ -1,0 +1,39 @@
+
+
+//////////////////////////////////////////////////////
+[¡Gracias por vuestro tiempo!]
+//////////////////////////////////////////////////////
+
+[Desarrollo]
+Álvaro González Luque
+
+[Programación]
+Álvaro González Luque
+
+[Diseño]
+Álvaro González Luque
+
+[Banda sonora]
+Álvaro González Luque
+
+[Recursos]
+pngtree-empty-clock-clipart-transparent-background-png-image_8970589.png - pngtree.com
+Gaudeamus Igitur - OUGR Orquesta Universidad de Granada
+ETSIIT_Universidad_de_Granada.jpg - Wikipedia
+etsiit-vertical-color-bi.png - ETS INGENIERÍAS INFORMÁTICA Y DE TELECOMUNICACIÓN
+logougr-fondo-corporativo.webp - canal.ugr.es
+música para sentirse derrotado sin copyright - Animos
+Musica Epica - Victory
+Abstract Black and White wave pattern - HypnoRimaVisuals
+fondo créditos - wallpapers.com
+bandera meta - flaticon.es
+
+[Software empleado]
+Godot Engine			Github
+Diagrams.net			Paint 3D
+Piskel					YouCut video editor
+
+
+
+[Agradecimientos:]
+Pablo García Sánchez

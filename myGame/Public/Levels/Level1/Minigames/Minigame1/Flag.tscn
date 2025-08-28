@@ -1,0 +1,18 @@
+[gd_scene load_steps=4 format=3 uid="uid://s1lygusllah0"]
+
+[ext_resource type="Script" path="res://Public/Levels/Level1/Minigames/Minigame1/flag.gd" id="1_lhwag"]
+[ext_resource type="Texture2D" uid="uid://dig6jhrsbeydx" path="res://Public/Levels/Level1/Minigames/Minigame1/meta.png" id="2_aetf1"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_a482i"]
+size = Vector2(90, 93)
+
+[node name="Flag" type="Area2D"]
+script = ExtResource("1_lhwag")
+
+[node name="FlagSprite" type="Sprite2D" parent="."]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_aetf1")
+
+[node name="FlagCollision" type="CollisionShape2D" parent="."]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_a482i")

@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://1oxj2v15vje4"]
+
+[ext_resource type="Script" path="res://Public/Levels/Level1/Minigames/Minigame1/game.gd" id="1_8xndc"]
+[ext_resource type="Texture2D" uid="uid://ciflnaqwfffbw" path="res://Public/Levels/Level1/Minigames/Minigame2/clase.jpg" id="2_4bx2c"]
+
+[node name="PlatformGame" type="Node2D"]
+script = ExtResource("1_8xndc")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+custom_minimum_size = Vector2(1150, 650)
+offset_right = 1154.0
+offset_bottom = 650.0
+color = Color(0.481515, 0.734033, 0.265164, 1)
+
+[node name="TextureRect" type="TextureRect" parent="ColorRect"]
+layout_mode = 0
+offset_left = -103.0
+offset_top = 72.0
+offset_right = 1277.0
+offset_bottom = 575.0
+texture = ExtResource("2_4bx2c")

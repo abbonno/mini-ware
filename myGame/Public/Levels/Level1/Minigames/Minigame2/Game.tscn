@@ -1,0 +1,103 @@
+[gd_scene load_steps=7 format=3 uid="uid://dgfm67cw0n61d"]
+
+[ext_resource type="Script" path="res://Public/Levels/Level1/Minigames/Minigame2/game.gd" id="1_udunh"]
+[ext_resource type="Texture2D" uid="uid://c0h81ycdwa3d8" path="res://Public/Levels/Level1/Minigames/Minigame2/swad.png" id="2_jm3u4"]
+[ext_resource type="Texture2D" uid="uid://cv87apx5ws8qk" path="res://Public/Levels/Level1/Minigames/Minigame2/decsai.png" id="3_5mrde"]
+[ext_resource type="Texture2D" uid="uid://bdxstfx5trvfr" path="res://Public/Levels/Level1/Minigames/Minigame2/icar.png" id="4_ksbbl"]
+[ext_resource type="Texture2D" uid="uid://dpe75q0uwnror" path="res://Public/Levels/Level1/Minigames/Minigame2/osl.png" id="5_0r1xi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_bv401"]
+font_size = 30
+font_color = Color(0, 0, 0, 1)
+outline_size = 10
+
+[node name="colorsGame" type="Node2D"]
+script = ExtResource("1_udunh")
+
+[node name="ColorRect" type="ColorRect" parent="."]
+offset_right = 1182.0
+offset_bottom = 684.0
+color = Color(0.439216, 0.262745, 0.329412, 1)
+
+[node name="Grid" type="Node2D" parent="."]
+
+[node name="RedRect" type="ColorRect" parent="Grid"]
+offset_left = 465.0
+offset_top = 32.0
+offset_right = 687.0
+offset_bottom = 254.0
+color = Color(1, 0.129412, 0.145098, 1)
+
+[node name="TextureRect" type="TextureRect" parent="Grid/RedRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.9, 0.9)
+pivot_offset = Vector2(111, 111)
+texture = ExtResource("2_jm3u4")
+expand_mode = 1
+
+[node name="BlueRect" type="ColorRect" parent="Grid"]
+offset_left = 465.0
+offset_top = 301.0
+offset_right = 687.0
+offset_bottom = 523.0
+color = Color(0.117647, 0.388235, 1, 1)
+
+[node name="TextureRect" type="TextureRect" parent="Grid/BlueRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.9, 0.9)
+pivot_offset = Vector2(111, 111)
+texture = ExtResource("3_5mrde")
+expand_mode = 1
+
+[node name="GreenRect" type="ColorRect" parent="Grid"]
+offset_left = 206.0
+offset_top = 210.0
+offset_right = 428.0
+offset_bottom = 432.0
+color = Color(0.145098, 1, 0.152941, 1)
+
+[node name="TextureRect" type="TextureRect" parent="Grid/GreenRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.9, 0.9)
+pivot_offset = Vector2(111, 111)
+texture = ExtResource("4_ksbbl")
+
+[node name="YellowRect" type="ColorRect" parent="Grid"]
+offset_left = 724.0
+offset_top = 210.0
+offset_right = 946.0
+offset_bottom = 432.0
+color = Color(1, 1, 0, 1)
+
+[node name="TextureRect" type="TextureRect" parent="Grid/YellowRect"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_0r1xi")
+expand_mode = 1
+
+[node name="Label" type="Label" parent="."]
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 82.0
+offset_bottom = 52.0
+label_settings = SubResource("LabelSettings_bv401")
+metadata/_edit_use_anchors_ = true
