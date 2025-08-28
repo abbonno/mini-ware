@@ -14,15 +14,15 @@ signal minigame_result(win: bool)
 @onready var minigame_timer = $Timer
 @onready var time_sprite = $TimeIndicatorContainer/TimeIndicatorSpriteContainer
 @onready var options = $Options
-@onready var post_process_material = $shaderEffects.material
 
-const CONTROL_SCENE_DURATION = 1.0
+const CONTROL_SCENE_DURATION = 2.0
 const SPEEDUP_POPUP_DURATION = 1.0
 const INSTRUCTIONS_POPUP_DURATION = 1.0
 const TIME_WARNING = 2.0
 
-var max_lives = 4
-var goal_score = 10
+var n_speed_up = 0
+var max_lives = 3
+var goal_score = 6
 var speed_up_score = 2
 var lives = max_lives
 var score = 0
@@ -76,11 +76,6 @@ func _ready():
 	options.open_options.connect(_on_open_options)
 	options.connect("exit_to_main_menu", Callable(self, "_on_exit_requested"))
 	
-	if !music_manager:
-		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
-		get_tree().get_root().call_deferred("add_child", music_manager)
-		await get_tree().process_frame
-	
 	popup_container.visible = false
 	health_container.visible = false
 	for i in max_lives:
@@ -96,12 +91,7 @@ func _ready():
 	minigames_path = current_level_path + Globals.MINIGAMES_DIR
 	assetRecognition.load_dir_names_from_directory(minigames_path, minigames_list)
 	
-	# Cargar cinemática intro
-	#introduction_scene()
-	if(musicDetected):
-		music_manager.play_music(level_theme)
-		video_player.volume_db = -80
-	control_scene()
+	introduction_scene()
 
 func introduction_scene():
 	video_player.stream = video_intro
@@ -112,7 +102,7 @@ func introduction_scene():
 	if(musicDetected):
 		music_manager.play_music(level_theme)
 		video_player.volume_db = -80
-		
+	
 	control_scene()
 
 func control_scene():
@@ -132,7 +122,8 @@ func control_scene():
 	score_label.visible = true
 	
 	# Speedup popup
-	if win and !(score % int(speed_up_score)) and score != 0 and music_manager.music.pitch_scale < 2:
+	if win and !(score % int(speed_up_score)) and score != 0 and n_speed_up <= 2:
+		n_speed_up = n_speed_up + 1
 		assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
 		popup_container.visible = true
 		music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 
@@ -150,7 +141,7 @@ func control_scene():
 	popup_container.visible = true
 	await get_tree().create_timer(INSTRUCTIONS_POPUP_DURATION, false).timeout
 	popup_container.visible = false
-	if popup_container.get_child(0):
+	if popup_container.get_child_count() > 0:
 		popup_container.get_child(0).queue_free()
 	
 	# Change scene
@@ -167,7 +158,8 @@ func game_scene():
 	if minigame.has_signal("win"):
 		minigame.win.connect(Callable(self, "_on_minigame_result"))
 	minigame_container.add_child(minigame)
-	minigame_timer.wait_time = assetRecognition.get_json_element(minigame_info_path, Globals.DURATION_FIELD, 2)
+	var minigame_duration = assetRecognition.get_json_element(minigame_info_path, Globals.DURATION_FIELD, 2)
+	minigame_timer.wait_time = minigame_duration - (1.0 * n_speed_up)
 	minigame_timer.start()
 	_run_timer_feedback()
 	await minigame_timer.timeout
@@ -178,12 +170,14 @@ func game_scene():
 		score = score+1
 		score_label.text = str(score)
 		if score >= goal_score and !endless_mode:
+			music_manager.stop_music()
 			end_scene()
 			return
 	else:
 		lives = lives-1
 		health_container.get_child(lives).free()
 		if lives <= 0:
+			music_manager.stop_music()
 			end_scene()
 			return
 	control_scene()
@@ -191,18 +185,17 @@ func game_scene():
 func end_scene():
 	if win:
 		video_player.stream = video_win_end
-		update_level_info(Globals.DATA_FILE, level_index, "winScore", calculate_rank(max_lives, lives))
+		update_level_info(Globals.DATA_FILE, level_index, "winScore", calculate_rank(lives))
 	else:
 		video_player.stream = video_lose_end
 		if endless_mode:
 			update_level_info(Globals.DATA_FILE, level_index, "endless_score", score)
 		else:
 			update_level_info(Globals.DATA_FILE, level_index, "loseScore", score)
+	video_player.volume_db = 0
 	video_player.play()
-	# await video_player.finished
-	await get_tree().create_timer(1, false).timeout
+	await video_player.finished
 	music_manager.music.pitch_scale = 1
-	music_manager.stop_music()
 	var transition = preload(Globals.SCENE_TRANSITION_SCENE).instantiate()
 	get_tree().root.add_child(transition)
 	transition.change_scene(preload(Globals.MAIN_MENU_SCENE).instantiate())
@@ -239,7 +232,7 @@ func update_level_info(data_path: String, level_key: String, field: String, mode
 	json_data[level_key] = level_data
 	saveEncoder.save_encoded_json(data_path, json_data)
 
-func calculate_rank(max_lives: int, lives_lost: int):
+func calculate_rank(lives_lost: int):
 	var grades = [4, 3, 2, 1]
 	var num_grades = min(grades.size(), max_lives)
 	var step = max_lives / float(num_grades)
@@ -257,10 +250,10 @@ func _run_timer_feedback():
 func _run_clock_animation():
 	time_sprite.visible = true
 	var clocks_list = []
-	assetRecognition.load_file_names_from_directory(current_level_path + "Clock", clocks_list)
+	assetRecognition.load_file_names_from_directory(current_level_path + Globals.CLOCK_DIR, clocks_list)
 	var tiempo_frame : float = minigame_timer.time_left/clocks_list.size() - 0.05
 	for clock in clocks_list:
-		assetRecognition.load_visual_resource(current_level_path + "Clock/", clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
+		assetRecognition.load_visual_resource(current_level_path + Globals.CLOCK_DIR, clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
 		await get_tree().create_timer(tiempo_frame, false).timeout
 		time_sprite.get_child(0).queue_free()
 	

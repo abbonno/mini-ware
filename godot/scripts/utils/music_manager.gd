@@ -5,6 +5,9 @@ extends Node
 
 var DURATION: float = 0.2
 
+func _ready():
+	music.connect("finished", Callable(self, "_on_music_finished"))
+
 func _fade_out_music(fadeDuration := DURATION):
 	await _fade_volume(music, music.volume_db, -40, fadeDuration)
 
@@ -21,11 +24,6 @@ func _fade_volume(player, from: float, to: float, fadeDuration: float):
 	player.volume_db = to
 
 func play_music(stream, fade := true, fadeDuration := DURATION):
-	music.connect("finished", Callable(self, "_on_music_finished"))
-
-	if fade:
-		_fade_out_music(fadeDuration)
-		await get_tree().create_timer(fadeDuration).timeout
 	music.stream = stream
 	music.volume_db = -40
 	music.play()

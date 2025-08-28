@@ -32,18 +32,26 @@ func _ready():
 
 func load_credits(path: String):
 	if not FileAccess.file_exists(path):
-		label.text = "[color=red]No credits file found.[/color]"
-		print("CREDITS ERROR: Credits file not found.")
+		label.text = "[color=red]Archivo de créditos no encontrado.[/color]"
 		return
-
+	
 	var file = FileAccess.open(path, FileAccess.READ)
-	var content = file.get_as_text()
+	var lines = file.get_as_text().split("\n")
 	file.close()
 
-	label.bbcode_enabled = true
-	label.scroll_active = false
 	label.clear()
-	label.append_text(content)
+	for line in lines:
+		line = line.strip_edges()
+		if line.begins_with("[") and line.ends_with("]"):
+			var title = line.substr(1, line.length() - 2)
+			label.append_text("[center][b]" + title + "[/b][/center]\n")
+		elif line != "":
+			label.append_text("[center]" + line + "[/center]\n")
+		else:
+			label.append_text("\n")  # Espaciado
+
+	label.scroll_active = false
+	label.bbcode_enabled = true
 
 func _process(delta):
 	if is_paused:

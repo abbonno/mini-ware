@@ -59,7 +59,7 @@ const WIN_END_VID = "winEndVid"
 const LOSE_END_VID = "loseEndVid"
 
 const HEALTH_SPRITE = "healthSprite"
-const SPEED_UP_POPUP = "speed_up"
+const SPEED_UP_POPUP = "speedUp"
 const LEVEL_THEME = "levelTheme"
 const SPEEDUP_SFX = "speedUpSFX"
 const GAME_SCENE = "Game.tscn"

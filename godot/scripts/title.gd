@@ -1,7 +1,6 @@
 extends Control
 
 @onready var assetRecognition = AssetRecognition.new()
-@onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
 @onready var background = $Background
 @onready var titleLabel = $TitleLabel
@@ -10,6 +9,8 @@ extends Control
 @onready var credits_button = $CreditsButton
 @onready var options = $Options
 
+var music_manager
+
 func _ready():
 	var config = ConfigFile.new()
 	if config.load(Globals.CONFIG_FILE) == OK:
@@ -17,16 +18,15 @@ func _ready():
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN if fullscreen else DisplayServer.WINDOW_MODE_WINDOWED)
 		
 		var volume = config.get_value("audio", "music_volume", 0.5)
-		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Music"), linear_to_db(volume))
+		AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), linear_to_db(volume))
 	
 	titleLabel.text = ProjectSettings.get("application/config/name")
 	assetRecognition.load_visual_resource(Globals.TITLE_PATH, Globals.TITLE_BACKGROUND, background)
 	assetRecognition.load_visual_resource(Globals.TITLE_PATH, Globals.TITLE_LOGO, logoPanel)
-	
-	if !music_manager:
-		music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
-		get_tree().get_root().call_deferred("add_child", music_manager)
-		await get_tree().process_frame
+
+	music_manager = preload(Globals.MUSIC_MANAGER_SCENE).instantiate()
+	get_tree().get_root().call_deferred("add_child", music_manager)
+	await get_tree().process_frame
 	var title_theme = load(Globals.TITLE_PATH + Globals.TITLE_THEME + "." + assetRecognition.get_extension(Globals.TITLE_PATH, Globals.TITLE_THEME))
 	if title_theme:
 		music_manager.play_music(title_theme)
