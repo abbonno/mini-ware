@@ -54,20 +54,20 @@ func spawn_level(pattern: Array):
 
 func _on_win():
 	music_manager.play_sound(load("res://Public/Levels/Level1/Minigames/Minigame1/win.ogg"))
-	_set_paused_recursively($".", true)
+	_pause_recursively($".")
 	emit_signal("win", true)
 
 func _on_player_fell():
 	music_manager.play_sound(load("res://Public/Levels/Level1/Minigames/Minigame1/hit.ogg"))
-	_set_paused_recursively($".", true)
+	_pause_recursively($".")
 	emit_signal("win", false)
 
-func _set_paused_recursively(node: Node, paused: bool) -> void:
-	node.set_process(not paused)
-	node.set_physics_process(not paused)
-	node.set_process_input(not paused)
-	node.set_process_unhandled_input(not paused)
-	node.set_process_unhandled_key_input(not paused)
+func _pause_recursively(node: Node) -> void:
+	node.set_process(false)
+	node.set_physics_process(false)
+	node.set_process_input(false)
+	node.set_process_unhandled_input(false)
+	node.set_process_unhandled_key_input(false)
 	for child in node.get_children():
 		if child is Node:
-			_set_paused_recursively(child, paused)
+			_pause_recursively(child)

@@ -7,11 +7,6 @@ const INPUT_KEYS = [KEY_UP, KEY_DOWN, KEY_LEFT, KEY_RIGHT]
 
 @onready var music_manager = get_tree().get_root().get_node("MusicManager")
 
-@onready var redButton = $Grid/RedRect
-@onready var blueButton = $Grid/BlueRect
-@onready var greenButton = $Grid/GreenRect
-@onready var yellowButton = $Grid/YellowRect
-
 @onready var buttons := [
 	$Grid/RedRect,
 	$Grid/BlueRect,

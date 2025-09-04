@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://1oxj2v15vje4"]
 
 [ext_resource type="Script" path="res://Public/Levels/Level1/Minigames/Minigame1/game.gd" id="1_8xndc"]
-[ext_resource type="Texture2D" uid="uid://ciflnaqwfffbw" path="res://Public/Levels/Level1/Minigames/Minigame2/clase.jpg" id="2_4bx2c"]
+[ext_resource type="Texture2D" uid="uid://ciflnaqwfffbw" path="res://Public/Levels/Level1/Minigames/Minigame1/clase.jpg" id="2_4bx2c"]
 
 [node name="PlatformGame" type="Node2D"]
 script = ExtResource("1_8xndc")

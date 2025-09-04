@@ -22,7 +22,7 @@ const TIME_WARNING = 2.0
 
 var n_speed_up = 0
 var max_lives = 3
-var goal_score = 6
+var goal_score = 1
 var speed_up_score = 2
 var lives = max_lives
 var score = 0
@@ -124,7 +124,7 @@ func control_scene():
 	# Speedup popup
 	if win and !(score % int(speed_up_score)) and score != 0 and n_speed_up <= 2:
 		n_speed_up = n_speed_up + 1
-		assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+		assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, Globals.SPEED_UP_POPUP, popup_container, TextureRect.EXPAND_FIT_HEIGHT, TextureRect.STRETCH_KEEP_CENTERED)
 		popup_container.visible = true
 		music_manager.music.pitch_scale = music_manager.music.pitch_scale + 0.1 
 		music_manager.play_sound(speedUp_SFX)
@@ -137,7 +137,7 @@ func control_scene():
 	
 	# Instructions popup
 	popup = assetRecognition.get_json_element(minigame_info_path, Globals.INSTRUCTION_FIELD)
-	assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT)
+	assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT, TextureRect.STRETCH_KEEP_CENTERED)
 	popup_container.visible = true
 	await get_tree().create_timer(INSTRUCTIONS_POPUP_DURATION, false).timeout
 	popup_container.visible = false
@@ -221,11 +221,11 @@ func update_level_info(data_path: String, level_key: String, field: String, mode
 		if mode_score > level_data.get("score", 0) && !level_data.get("complete", false):
 			level_data["score"] = mode_score
 	if field == "winScore":
-		if level_data.get("complete", false):
-			level_data["score"] = mode_score
-		elif mode_score > level_data.get("score", 0):
+		if !level_data.get("complete", false):
 			level_data["score"] = mode_score
 			level_data["complete"] = true
+		elif mode_score > level_data.get("score", 0):
+			level_data["score"] = mode_score
 	if field == "endless_score":
 		level_data["endless_score"] = mode_score
 	

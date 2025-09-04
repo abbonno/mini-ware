@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jsn67s3s1kdp"
-path="res://.godot/imported/tstc.png-fa26ba8e842eb9989dc293c41954113c.ctex"
+uid="uid://ciflnaqwfffbw"
+path="res://.godot/imported/clase.jpg-5616b0189e568a35df381b728b7adec8.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Public/Levels/Level1/Minigames/Minigame2/tstc.png"
-dest_files=["res://.godot/imported/tstc.png-fa26ba8e842eb9989dc293c41954113c.ctex"]
+source_file="res://Public/Levels/Level1/Minigames/Minigame1/clase.jpg"
+dest_files=["res://.godot/imported/clase.jpg-5616b0189e568a35df381b728b7adec8.ctex"]
 
 [params]
 
