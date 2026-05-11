@@ -101,24 +101,21 @@ func update_level_display(level_index : int):
 	if level_has_minigame(current_index):
 		play_button.disabled = false
 
-func level_has_minigame(level_index: int):
+func level_has_minigame(level_index: int) -> bool:
 	var minigames_base_path = Globals.LEVELS_PATH + levels_list[level_index] + "/" + Globals.MINIGAMES_DIR
-	var dir = DirAccess.open(minigames_base_path)
-	if dir == null:
+	
+	# Obtener lista de minijuegos (DirAccess en editor, _index.json en exportado)
+	var temp_list = []
+	assetRecognition.load_dir_names_from_directory(minigames_base_path, temp_list)
+	
+	if temp_list.size() == 0:
 		print("MAIN MENU ERROR: Minigames folder not found on the path: ", minigames_base_path)
 		return false
 	
-	dir.list_dir_begin()
-	var first_folder = dir.get_next()
-	dir.list_dir_end()
-	var minigame_path = minigames_base_path + first_folder + "/"
-	var subdir = DirAccess.open(minigame_path)
-	subdir.list_dir_begin()
-	var file = subdir.get_next()
-	while file != "":
-		if file == "Game.tscn":
-			return true
-		file = subdir.get_next()
-	subdir.list_dir_end()
-	print("MAIN MENU ERROR: Minigame scene not found on: ", minigame_path)
+	# Comprobar que al menos el primero tiene Game.tscn
+	var game_path = minigames_base_path + temp_list[0] + "/" + Globals.GAME_SCENE
+	if ResourceLoader.exists(game_path):
+		return true
+	
+	print("MAIN MENU ERROR: Minigame scene not found on: ", minigames_base_path + temp_list[0] + "/")
 	return false

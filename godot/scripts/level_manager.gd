@@ -50,6 +50,7 @@ var popup
 var minigame_info_path
 
 func _ready():
+
 	if assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.MAX_LIVES_FIELD) != "":
 		max_lives = assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.MAX_LIVES_FIELD)
 	if assetRecognition.get_json_element(current_level_path + Globals.MAIN_MENU_LEVEL_INFO, Globals.GOAL_SCORE_FIELD) != "":
@@ -64,11 +65,15 @@ func _ready():
 	video_win_end = load(current_level_path + Globals.VIDEOS_DIR + Globals.WIN_END_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.WIN_END_VID))
 	video_lose_end = load(current_level_path + Globals.VIDEOS_DIR + Globals.LOSE_END_VID + "." + assetRecognition.get_extension(current_level_path + Globals.VIDEOS_DIR, Globals.LOSE_END_VID))
 	
-	var level_theme_path = current_level_path + Globals.LEVEL_THEME + "." + assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME)
-	if(FileAccess.file_exists(level_theme_path)):
-		level_theme = load(level_theme_path)
+	# Carga del tema musical: usa get_extension y ResourceLoader en vez de FileAccess.file_exists
+	var ext = assetRecognition.get_extension(current_level_path, Globals.LEVEL_THEME)
+	if ext != "":
+		level_theme = load(current_level_path + Globals.LEVEL_THEME + "." + ext)
+		if level_theme == null:
+			musicDetected = false
 	else:
 		musicDetected = false
+
 	speedUp_SFX = load(current_level_path + Globals.SPEEDUP_SFX + "." + assetRecognition.get_extension(current_level_path, Globals.SPEEDUP_SFX))
 	
 	options.show_exit_button(true)
@@ -137,12 +142,17 @@ func control_scene():
 	
 	# Instructions popup
 	popup = assetRecognition.get_json_element(minigame_info_path, Globals.INSTRUCTION_FIELD)
+
+	# Limpiar ANTES de añadir el nuevo
+	for child in popup_container.get_children():
+		child.free()  # free() es inmediato, queue_free() no
+
 	assetRecognition.load_visual_resource(current_level_path + Globals.POPUPS_DIR, popup, popup_container, TextureRect.EXPAND_FIT_HEIGHT, TextureRect.STRETCH_KEEP_CENTERED)
 	popup_container.visible = true
 	await get_tree().create_timer(INSTRUCTIONS_POPUP_DURATION, false).timeout
 	popup_container.visible = false
-	if popup_container.get_child_count() > 0:
-		popup_container.get_child(0).queue_free()
+	for child in popup_container.get_children():
+		child.free()
 	
 	# Change scene
 	video_player.stop()
@@ -251,11 +261,18 @@ func _run_clock_animation():
 	time_sprite.visible = true
 	var clocks_list = []
 	assetRecognition.load_file_names_from_directory(current_level_path + Globals.CLOCK_DIR, clocks_list)
-	var tiempo_frame : float = minigame_timer.time_left/clocks_list.size() - 0.05
+
+	if clocks_list.size() == 0:
+		print("LEVEL MANAGER ERROR: No clock frames found in ", current_level_path + Globals.CLOCK_DIR)
+		time_sprite.visible = false
+		return
+
+	var tiempo_frame: float = minigame_timer.time_left / clocks_list.size() - 0.05
 	for clock in clocks_list:
 		assetRecognition.load_visual_resource(current_level_path + Globals.CLOCK_DIR, clock, time_sprite, TextureRect.EXPAND_IGNORE_SIZE, TextureRect.STRETCH_KEEP_ASPECT)
 		await get_tree().create_timer(tiempo_frame, false).timeout
-		time_sprite.get_child(0).queue_free()
+		if time_sprite.get_child_count() > 0:  # guarda para evitar crash si el nodo ya fue liberado
+			time_sprite.get_child(0).queue_free()
 	
 	time_sprite.visible = false
 

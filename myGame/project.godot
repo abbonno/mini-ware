@@ -10,7 +10,7 @@ config_version=5
 
 [application]
 
-config/name="Mini ware"
+config/name="MiniWare"
 run/main_scene="res://scenes/title.tscn"
 config/features=PackedStringArray("4.3", "GL Compatibility")
 

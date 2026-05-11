@@ -3,24 +3,29 @@ class_name AssetRecognition
 # General
 
 ## Obtains the file extension, used to detect its type
-func get_extension(assetsFolder: String, fileName: String):
-	var dir = DirAccess.open(assetsFolder)
-	if dir == null:
-		print("ASSET RECOGNITION ERROR: Assets folder could not be found: " + assetsFolder)
-		return ""
-	var files = dir.get_files()
-	var regex = RegEx.new()
-	
-	regex.compile("^" + fileName + "\\.(.+)$")
-	for file in files:
-		if file.ends_with(".import"):
-			continue
-		var match = regex.search(file)
-		if match:
-			return match.get_string(1).to_lower()
+## Uses ResourceLoader.exists() as fallback for exported builds where DirAccess.get_files() returns empty
+func get_extension(assetsFolder: String, fileName: String) -> String:
+	var supported_extensions = [
+		# Imágenes primero (prioridad sobre json para evitar colisiones de nombre)
+		"png", "jpg", "jpeg", "webp", "svg", "bmp", "dds", "exr", "hdr", "tga", "ktx",
+		# Audio
+		"ogg", "mp3", "wav",
+		# Vídeo
+		"ogv",
+		# Shaders y escenas
+		"gdshader", "tscn",
+		# Datos al final
+		"json", "txt", "cfg"
+	]
+	for ext in supported_extensions:
+		var path = assetsFolder + fileName + "." + ext
+		if FileAccess.file_exists(path) or ResourceLoader.exists(path):
+			return ext
+	print("ASSET RECOGNITION ERROR: Assets folder could not be found: " + assetsFolder + fileName)
 	return ""
 
 ## Loads the name of the directories contained in the path folder into the dir_list list
+## Uses _index.json as fallback for exported builds where DirAccess returns empty
 func load_dir_names_from_directory(path: String, dir_list):
 	var dir = DirAccess.open(path)
 	if dir:
@@ -31,17 +36,34 @@ func load_dir_names_from_directory(path: String, dir_list):
 				dir_list.append(folder_name)
 			folder_name = dir.get_next()
 		dir.list_dir_end()
-	else:
-		print("ASSET RECOGNITION ERROR: Dir folder could not be found: ", path)
+		if dir_list.size() > 0:
+			return  # Éxito por DirAccess
+
+	# Fallback para exportado: leer _index.json
+	var index_path = path + "_index.json"
+	if FileAccess.file_exists(index_path):
+		var file = FileAccess.open(index_path, FileAccess.READ)
+		var json = JSON.parse_string(file.get_as_text())
+		file.close()
+		if json is Array:
+			for entry in json:
+				dir_list.append(entry)
+			return
+
+	print("ASSET RECOGNITION ERROR: Dir folder could not be found: ", path)
 
 ## Loads the name of the files contained in the path folder into the file_list list
+## Excludes .json and .import files. Uses _files_index.json as fallback for exported builds.
 func load_file_names_from_directory(path: String, file_list):
 	var dir = DirAccess.open(path)
 	if dir:
 		dir.list_dir_begin()
 		var file_name = dir.get_next()
 		while file_name != "":
-			if not dir.current_is_dir() and not file_name.begins_with(".") and not file_name.ends_with(".import"):
+			if not dir.current_is_dir() \
+			and not file_name.begins_with(".") \
+			and not file_name.ends_with(".import") \
+			and not file_name.ends_with(".json"):
 				var dot_index = file_name.rfind(".")
 				if dot_index != -1:
 					var base_name = file_name.substr(0, dot_index)
@@ -49,14 +71,27 @@ func load_file_names_from_directory(path: String, file_list):
 						file_list.append(base_name)
 			file_name = dir.get_next()
 		dir.list_dir_end()
-	else:
-		print("ASSET RECOGNITION ERROR: Files folder could not be found: ", path)
+		if file_list.size() > 0:
+			return  # Éxito por DirAccess
+
+	# Fallback para exportado: leer _files_index.json
+	var index_path = path + "_files_index.json"
+	if FileAccess.file_exists(index_path):
+		var file = FileAccess.open(index_path, FileAccess.READ)
+		var json = JSON.parse_string(file.get_as_text())
+		file.close()
+		if json is Array:
+			for entry in json:
+				file_list.append(entry)
+			return
+
+	print("ASSET RECOGNITION ERROR: Files folder could not be found: ", path)
 
 # Images
 
 ## Detects visual resource type between image (png, jpg, jpeg, webp, svg), video (ogv) and shader (gdshader)
 ## named by the fileName from the assetsFolder and loads them into the specified container. Can personalize
-## other container's atributes (expand, stretch,  anchors).
+## other container's atributes (expand, stretch, anchors).
 func load_visual_resource(assetsFolder: String, fileName: String, container, expand = TextureRect.EXPAND_FIT_WIDTH, stretch = TextureRect.STRETCH_SCALE, anchors = Control.PRESET_FULL_RECT):
 	var ext = get_extension(assetsFolder, fileName)
 	if ext == "":
@@ -64,7 +99,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 		return
 	var path = assetsFolder + fileName + "." + ext
 	match ext:
-		"bmp", "dds", "ktx", "exr", "hdr", "jpg", "jpeg", "png", "tga", "svg", "webp" :
+		"bmp", "dds", "ktx", "exr", "hdr", "jpg", "jpeg", "png", "tga", "svg", "webp":
 			var sprite_file = load(path)
 			if sprite_file != null:
 				var sprite = TextureRect.new()
@@ -75,7 +110,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				container.add_child(sprite)
 			else:
 				print("ASSET RECOGNITION ERROR: Image could not be loaded: ", path)
-				
+
 		"ogv":
 			var video_file = load(path)
 			if video_file != null:
@@ -88,7 +123,7 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 				container.add_child(video)
 			else:
 				print("ASSET RECOGNITION ERROR: Video could not be loaded: ", path)
-				
+
 		"gdshader":
 			var shader_file = load(path)
 			if shader_file != null and shader_file is Shader:
@@ -109,9 +144,9 @@ func load_visual_resource(assetsFolder: String, fileName: String, container, exp
 		_:
 			print("ASSET RECOGNITION ERROR: Unsuported visual element extension: ", ext)
 
-# Data (podríamos hacer como con las imágenes algo general para json y cfg)
+# Data
 
-## Returns JSONelement found in JSON file given by JSONpath
+## Returns JSON element found in JSON file given by json_path
 func get_json_element(json_path: String, key_path: String, default_value = ""):
 	if not FileAccess.file_exists(json_path):
 		print("ASSET RECOGNITION ERROR: JSON file has not been found: ", json_path)
@@ -142,14 +177,13 @@ func get_json_element(json_path: String, key_path: String, default_value = ""):
 
 	return current
 
-## Returns JSONelement found in JSON file given by JSONpath after decoding it
+## Returns JSON element found in encrypted save file given by json_path
 func get_encrypted_json_element(json_path: String, key_path: String, default_value = null):
 	if not FileAccess.file_exists(json_path):
-		print("ASSET RECOGNITION ERROR: JSON file not found on: ", json_path)
 		return default_value
 
-	var file = FileAccess.open(json_path, FileAccess.READ)
-	if not file:
+	var file = FileAccess.open_encrypted_with_pass(json_path, FileAccess.READ, Globals.SECRET_KEY)
+	if file == null:
 		return default_value
 
 	var content := file.get_as_text().strip_edges()
@@ -158,22 +192,7 @@ func get_encrypted_json_element(json_path: String, key_path: String, default_val
 	if content == "":
 		return default_value
 
-	var parsed = JSON.parse_string(content)
-	if typeof(parsed) != TYPE_DICTIONARY:
-		return default_value
-
-	if not parsed.has("data") or not parsed.has("hash"):
-		return default_value
-
-	var data_text = parsed["data"]
-	var stored_hash = parsed["hash"]
-	var recalculated_hash = SaveEncoder.new()._generate_hash(data_text)
-
-	if stored_hash != recalculated_hash:
-		push_error("Data has been manipulated!")
-		return default_value
-
-	var json_data = JSON.parse_string(data_text)
+	var json_data = JSON.parse_string(content)
 	if typeof(json_data) != TYPE_DICTIONARY:
 		return default_value
 
